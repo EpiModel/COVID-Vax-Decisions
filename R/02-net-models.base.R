@@ -2,10 +2,10 @@ library("EpiModelCOVID")
 source("R/01-epi-params.R")
 
 # Set network
-n <- 1000
+n <- 10000
 nw <- network_initialize(n)
 
-age <- round(rnorm(n, 40, 21), 1)
+age <- round(rnorm(n, 40, 21), 1) #from Katy's thesis
 age <- pmax(age, 0)
 age <- pmin(age, 99)
 
@@ -16,7 +16,7 @@ nw <- set_vertex_attribute(nw, "age", age)
 nw <- set_vertex_attribute(nw, "age.grp", age.grp)
 
 ## Within household network
-md.hh <- 2.5
+md.hh <- 2.7 # from Kristin's dissertation: census estimate of people per household
 target.stats.hh <- md.hh * n / 2
 
 formation.hh <- ~edges
@@ -32,7 +32,7 @@ est.hh <- netest(
 )
 
 ## Within office network
-md.oo <- 5
+md.oo <- 5 # assumed; update with corporateMix data
 target.stats.oo <- md.oo * n / 2
 formation.oo <- ~edges
 coef.diss.oo <- dissolution_coefs(dissolution = ~ offset(edges), duration = 1e5)
@@ -47,7 +47,7 @@ est.oo <- netest(
 )
 
 ## Community network
-md.cc <- 2
+md.cc <- 5 # from Kristin's dissertation: population contact patterns during pandemic; need to update
 target.stats.cc <- md.cc * n / 2
 formation.cc <- ~edges
 coef.diss.cc <- dissolution_coefs(dissolution = ~ offset(edges), duration = 1)
