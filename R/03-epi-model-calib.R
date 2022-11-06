@@ -8,7 +8,7 @@ est <- readRDS("data/input/est.rds")
 source("R/01-epi-params.R")
 param <- param.net(
   inf.prob = c(0.11, 0.11, 0.11), # per layer; from Kristin
-  act.rate = c(5, 1, 1), # from corporate model; original source unclear
+  act.rate = c(5, 1, 1), # per layer; assumed
   inf.prob.a.rr = 0.5, # from Kristin
   act.rate.dx.inter.rr = 1, # turning off for now
   act.rate.dx.inter.time = Inf, # turning off for now
@@ -31,17 +31,24 @@ param <- param.net(
   vax1.start = c(534, 132, 84, 74, 11), # age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax3.start = c(Inf, 368, 323, 323, 265), # age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax4.start = c(Inf, Inf, Inf, 453, 453), # age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax1.rate = c(0.001, 0.02, 0.11, 0.11, 0.43), # from Katy; age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax2.rate = c(0.0005, 0.0006, 0.008, 0.008, 0.0075), # from Katy; age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax3.rate = c(0, 0.01, 0.01, 0.05, 0.043), # from Katy; age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax4.rate = c(0, 0, 0, 0.05, 0.05), # assumed based on vax3.rate; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax1.rate = c(0.0005, 0.002, 0.012, 0.012, 0.02), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax1.rate.half.life = c(365, 200, 80, 80, 100), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax2.rate = c(0.01, 0.54, 0.65, 0.65, 0.25), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax2.rate.half.life = c(365, 80, 30, 30, 40), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax3.rate = c(0, 0.005, 0.01, 0.025, 0.02), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax3.rate.half.life = c(NA, 60, 35, 30, 50), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax4.rate = c(0, 0, 0, 0.005, 0.005), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax4.rate.half.life = c(NA, NA, NA, 60, 80),
   vax2.interval = 21, # 3 weeks
   vax3.interval = 180, # 6 months
   vax4.interval = 120, # 4 months
   se.prob = c(0.18, 0.18, 0.18, 0.18), # per dose; from Chrissian et al
-  inf.nudge.prob = 0.072, # from Yadete et al (65.8 vs. 58.6% booster willingness for those with vs. without infected friends/family)
-  se.nudge.prob = 0.073, # from Chrissian et al (61.6 vs. 68.8% booster willingness for those with vs. without missed work due to SE)
-  bt.nudge.prob = 0.125, # from Dziedzic et al (66 vs. 78.5% booster willingness for those with vs. without previous infection)
+  # inf.nudge.prob = 0.072, # from Yadete et al (65.8 vs. 58.6% booster willingness for those with vs. without infected friends/family)
+  # se.nudge.prob = 0.073, # from Chrissian et al (61.6 vs. 68.8% booster willingness for those with vs. without missed work due to SE)
+  # bt.nudge.prob = 0.125, # from Dziedzic et al (66 vs. 78.5% booster willingness for those with vs. without previous infection)
+  inf.nudge.prob = 0,
+  se.nudge.prob = 0,
+  bt.nudge.prob = 0,
   vax1.rr.infect = 0.324, # from Katy
   vax2.rr.infect = 0.112, # from Katy
   vax3.rr.infect = 0.12, # from Katy
@@ -59,10 +66,11 @@ param <- param.net(
   mort.rates = mr_vec, # from Kristin (age <1, 1-4, 5-9, 10-14, ... 80-84, 85+)
   mort.dis.mult = 180, # from Katy
   half.life = 80, # from Katy
-  vax.willing.prob = c(0.7, 0.75, 0.85) # from Kelly et al; age 18 - 49, 50 - 64, 65+
+  # vax.willing.prob = c(0.7, 0.75, 0.85) # from Kelly et al; age 18 - 49, 50 - 64, 65+
+  vax.willing.prob = c(1, 1, 1)
 )
 
-init <- init.net(e.num = 100)
+init <- init.net(e.num = 50)
 
 control <- control.net(
   nsteps = 608,

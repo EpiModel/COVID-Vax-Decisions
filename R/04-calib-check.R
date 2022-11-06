@@ -62,7 +62,6 @@ vax_cov <- as.data.frame(sapply(vax_cov, function(x) round(x, 3)*100))
 vax_cov$ts <- 1:nrow(vax_cov)
 vax_cov <- merge(times, vax_cov, by.x = "DayNum", by.y = "ts")
 
-
 # Combine and output ------------------------------------------------------
 
 calib_results <- merge(cases, deaths)
