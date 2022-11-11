@@ -23,7 +23,7 @@ param <- param.net(
   icr.rate = 1 / 3.5, # from Kristin (duration of clinical infectious period prior to recovery)
   ich.rate = 1 / 3, # from Kristin (duration of clinical infectious period prior to hosp)
   hr.rate = 1 / 4, # from Kristin (duration of hospitalization prior to recovery)
-  rs.rate = 1 / 390, # from Katy (time from recovered to susceptible)
+  rs.rate = 1 / 270, # https://www.cdc.gov/coronavirus/2019-ncov/science/science-briefs/vaccine-induced-immunity.html 
   pcr.sens = 0.8, # from Kristin
   dx.rate.sympt = 0.1, # from Katy
   dx.rate.other = 0.01, # from Katy

@@ -16,12 +16,20 @@ times <- times %>% map_df(rev)
 nDx.pos <- sim[["epi"]][["nDx.pos"]]
 nDx.pos$sim1[1] <- 0
 nDx.pos$ts <- 1:nrow(nDx.pos)
-nDx.pos$cumCases <- cumsum(nDx.pos$sim1)
+nDx.pos$cumDxCases <- cumsum(nDx.pos$sim1)
+
+allCases <- sim[["epi"]][["se.flow"]]
+allCases$sim1[1] <- 0
+allCases$ts <- 1:nrow(allCases)
+allCases$cumAllCases <- cumsum(allCases$sim1)
 
 cases <- merge(times, nDx.pos, by.x = "DayNum", by.y = "ts")
-cases$Cases <- cases$cumCases - lag(cases$cumCases)
-cases$Cases[1] <- cases$cumCases[1]
-cases <- cases[, c(1, 2, 5)]
+cases <- merge(cases, allCases, by.x = "DayNum", by.y = "ts")
+cases$DxCases <- cases$cumDxCases - lag(cases$cumDxCases)
+cases$DxCases[1] <- cases$cumDxCases[1]
+cases$AllCases <- cases$cumAllCases - lag(cases$cumAllCases)
+cases$AllCases[1] <- cases$cumAllCases[1]
+cases <- cases[, c(1, 2, 7, 8)]
 
 
 # Deaths ------------------------------------------------------------------

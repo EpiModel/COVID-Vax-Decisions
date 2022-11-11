@@ -5,6 +5,7 @@ source("R/01-epi-params.R")
 n <- 10000
 nw <- network_initialize(n)
 
+# Initialize demographic attributes that are relevant to nw structure
 age <- round(rnorm(n, 40, 21), 1) #from Katy's thesis
 age <- pmax(age, 0)
 age <- pmin(age, 99)
@@ -19,7 +20,7 @@ nw <- set_vertex_attribute(nw, "age.grp", age.grp)
 md.hh <- 2.7 # from Kristin's dissertation: census estimate of people per household
 target.stats.hh <- md.hh * n / 2
 
-formation.hh <- ~edges
+formation.hh <- ~edges # count of edges
 
 coef.diss.hh <- dissolution_coefs(dissolution = ~ offset(edges), duration = 1e5)
 est.hh <- netest(
@@ -31,8 +32,15 @@ est.hh <- netest(
   set.control.ergm = control.ergm(MCMLE.maxit = 500)
 )
 
-## Within office network
-md.oo <- 5 # assumed; update with corporateMix data
+# Diagnose
+summary(est.hh)
+dx.hh <- netdx(est.hh, nsims = 25, ncores = 5, nsteps = 600, dynamic = TRUE,
+               set.control.ergm = control.simulate.formula(MCMC.burnin = 1e6),
+               nwstats.formula = ~edges + nodefactor("age.grp") + nodematch("age.grp"))
+plot(dx.hh)
+
+## Within office network -- to be removed
+md.oo <- 5 # assumed
 target.stats.oo <- md.oo * n / 2
 formation.oo <- ~edges
 coef.diss.oo <- dissolution_coefs(dissolution = ~ offset(edges), duration = 1e5)
@@ -60,6 +68,9 @@ est.cc <- netest(
   keep.fit = TRUE,
   set.control.ergm = control.ergm(MCMLE.maxit = 500)
 )
+
+dx.cc <- netdx(est.cc, nsims = 1000, dynamic = FALSE, 
+               set.control.ergm = control.simulate.formula(MCMC.burnin = 1e6))
 
 est <- list(est.hh, est.oo, est.cc)
 est <- lapply(est, trim_netest)
