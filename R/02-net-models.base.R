@@ -39,23 +39,8 @@ dx.hh <- netdx(est.hh, nsims = 25, ncores = 5, nsteps = 600, dynamic = TRUE,
                nwstats.formula = ~edges + nodefactor("age.grp") + nodematch("age.grp"))
 plot(dx.hh)
 
-## Within office network -- to be removed
-md.oo <- 5 # assumed
-target.stats.oo <- md.oo * n / 2
-formation.oo <- ~edges
-coef.diss.oo <- dissolution_coefs(dissolution = ~ offset(edges), duration = 1e5)
-
-est.oo <- netest(
-  nw,
-  formation.oo,
-  target.stats.oo,
-  coef.diss.oo,
-  keep.fit = TRUE,
-  set.control.ergm = control.ergm(MCMLE.maxit = 500)
-)
-
 ## Community network
-md.cc <- 5 # from Kristin's dissertation: population contact patterns during pandemic; need to update
+md.cc <- 10.8 # from Nelson et al
 target.stats.cc <- md.cc * n / 2
 formation.cc <- ~edges
 coef.diss.cc <- dissolution_coefs(dissolution = ~ offset(edges), duration = 1)
@@ -70,8 +55,9 @@ est.cc <- netest(
 )
 
 dx.cc <- netdx(est.cc, nsims = 1000, dynamic = FALSE, 
-               set.control.ergm = control.simulate.formula(MCMC.burnin = 1e6))
+               set.control.ergm = control.simulate.formula(MCMC.burnin = 1e6),
+               nwstats.formula = ~edges + nodefactor("age.grp") + nodematch("age.grp"))
 
-est <- list(est.hh, est.oo, est.cc)
+est <- list(est.hh, est.cc)
 est <- lapply(est, trim_netest)
 saveRDS(est, file = "data/input/est.rds")

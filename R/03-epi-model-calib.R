@@ -7,8 +7,8 @@ est <- readRDS("data/input/est.rds")
 # Model parameters
 source("R/01-epi-params.R")
 param <- param.net(
-  inf.prob = c(0.11, 0.11, 0.11), # per layer; from Kristin
-  act.rate = c(5, 1, 1), # per layer; assumed
+  inf.prob = c(0.11, 0.11), # per layer; from Kristin
+  act.rate = c(5, 1), # per layer; assumed
   inf.prob.a.rr = 0.5, # from Kristin
   act.rate.dx.inter.rr = 1, # turning off for now
   act.rate.dx.inter.time = Inf, # turning off for now
@@ -38,7 +38,7 @@ param <- param.net(
   vax3.rate = c(0, 0.005, 0.01, 0.025, 0.02), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax3.rate.half.life = c(NA, 60, 35, 30, 50), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax4.rate = c(0, 0, 0, 0.005, 0.005), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax4.rate.half.life = c(NA, NA, NA, 60, 80),
+  vax4.rate.half.life = c(NA, NA, NA, 60, 80), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax2.interval = 21, # 3 weeks
   vax3.interval = 180, # 6 months
   vax4.interval = 120, # 4 months
