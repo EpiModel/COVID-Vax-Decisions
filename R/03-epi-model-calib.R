@@ -2,13 +2,14 @@
 library("EpiModelCOVID")
 
 # Read in fitted network models
-est <- readRDS("data/input/est.rds")
+#est <- readRDS("data/input/est.rds")
+est <- readRDS("../COVID-Vax-Decisions/data/input/est-100000.rds")
 
 # Model parameters
 source("R/01-epi-params.R")
 param <- param.net(
-  inf.prob = c(0.11, 0.11), # per layer; from Kristin
-  act.rate = c(5, 1), # per layer; assumed
+  inf.prob = c(0.05, 0.05), # per layer; calibrated
+  act.rate = c(3, 1), # per layer; calibrated
   inf.prob.a.rr = 0.5, # from Kristin
   act.rate.dx.inter.rr = 1, # turning off for now
   act.rate.dx.inter.time = Inf, # turning off for now
@@ -16,9 +17,9 @@ param <- param.net(
   act.rate.sympt.inter.time = Inf, # turning off for now
   prop.clinical = c(0.573, 0.642, 0.760, 0.800, 0.813, 0.814, 0.769, 0.723, 0.666), # by decade of age; from Kristin
   prop.hospit = c(0.060, 0.063, 0.081, 0.154, 0.207, 0.268, 0.357, 0.465, 0.539), # by decade of age; from Kristin
-  ea.rate = 1 / 4.0, # from Kristin (duration of latent period)
+  ea.rate = 1 / 5.5, # from https://academic.oup.com/cid/article/74/9/1678/6359063 (duration of latent period)
   ar.rate = 1 / 5.0, # from Kristin (duration of subclinical infectious period)
-  eip.rate = 1 / 4.0, # from Kristin (duration of latent period)
+  eip.rate = 1 / 5.5, # from https://academic.oup.com/cid/article/74/9/1678/6359063 (duration of latent period)
   ipic.rate = 1 / 1.5, # from Kristin (duration of preclinical infectious period)
   icr.rate = 1 / 3.5, # from Kristin (duration of clinical infectious period prior to recovery)
   ich.rate = 1 / 3, # from Kristin (duration of clinical infectious period prior to hosp)
@@ -28,9 +29,9 @@ param <- param.net(
   dx.rate.sympt = 0.1, # from Katy
   dx.rate.other = 0.01, # from Katy
   allow.rescreen = TRUE, # assumed
-  vax1.start = c(534, 132, 84, 74, 11), # age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax3.start = c(Inf, 368, 323, 323, 265), # age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax4.start = c(Inf, Inf, Inf, 453, 453), # age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax1.start = 180 + c(534, 132, 84, 74, 11), # age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax3.start = 180 + c(Inf, 368, 323, 323, 265), # age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax4.start = 180 + c(Inf, Inf, Inf, 453, 453), # age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax1.rate = c(0.0005, 0.002, 0.012, 0.012, 0.02), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax1.rate.half.life = c(365, 200, 80, 80, 100), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax2.rate = c(0.01, 0.54, 0.65, 0.65, 0.25), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
@@ -70,10 +71,10 @@ param <- param.net(
   vax.willing.prob = c(1, 1, 1)
 )
 
-init <- init.net(e.num = 50)
+init <- init.net(e.num = 1600)
 
 control <- control.net(
-  nsteps = 608,
+  nsteps = 180 + 608,
   nsims = 1,
   ncores = 1,
   initialize.FUN = init_covid_vax_decisions,

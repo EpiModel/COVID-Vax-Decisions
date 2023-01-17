@@ -3,33 +3,34 @@
 
 suppressWarnings(suppressMessages(library(tidyverse)))
 suppressWarnings(suppressMessages(library(dplyr)))
-times <- data.frame(DayNum = c(608, 577, 546, 516, 485, 455, 424, 396, 365, 334, 
-                               304, 273, 243, 212, 181, 151, 120, 90, 59, 31),
+times <- data.frame(DayNum = c(788, 757, 726, 696, 665, 635, 604, 576, 545, 514, 
+                               484, 453, 423, 392, 361, 331, 300, 270, 239, 211,
+                               180, 149, 119, 88, 58, 27),
                     Month = c("Aug-22", "Jul-22", "Jun-22", "May-22", "Apr-22",
                               "Mar-22", "Feb-22", "Jan-22", "Dec-21", "Nov-21",
                               "Oct-21", "Sep-21", "Aug-21", "Jul-21", "Jun-21",
-                              "May-21", "Apr-21", "Mar-21", "Feb-21", "Jan-21"))
+                              "May-21", "Apr-21", "Mar-21", "Feb-21", "Jan-21",
+                              "Dec-20", "Nov-20", "Oct-20", "Sep-20", "Aug-20",
+                              "Jul-20"))
+# times <- data.frame(DayNum = 180 + c(608, 577, 546, 516, 485, 455, 424, 396, 365, 334, 
+#                                304, 273, 243, 212, 181, 151, 120, 90, 59, 31),
+#                     Month = c("Aug-22", "Jul-22", "Jun-22", "May-22", "Apr-22",
+#                               "Mar-22", "Feb-22", "Jan-22", "Dec-21", "Nov-21",
+#                               "Oct-21", "Sep-21", "Aug-21", "Jul-21", "Jun-21",
+#                               "May-21", "Apr-21", "Mar-21", "Feb-21", "Jan-21"))
 times <- times %>% map_df(rev)
 
 # Cases -------------------------------------------------------------------
-
-nDx.pos <- sim[["epi"]][["nDx.pos"]]
-nDx.pos$sim1[1] <- 0
-nDx.pos$ts <- 1:nrow(nDx.pos)
-nDx.pos$cumDxCases <- cumsum(nDx.pos$sim1)
 
 allCases <- sim[["epi"]][["se.flow"]]
 allCases$sim1[1] <- 0
 allCases$ts <- 1:nrow(allCases)
 allCases$cumAllCases <- cumsum(allCases$sim1)
 
-cases <- merge(times, nDx.pos, by.x = "DayNum", by.y = "ts")
-cases <- merge(cases, allCases, by.x = "DayNum", by.y = "ts")
-cases$DxCases <- cases$cumDxCases - lag(cases$cumDxCases)
-cases$DxCases[1] <- cases$cumDxCases[1]
+cases <- merge(times, allCases, by.x = "DayNum", by.y = "ts")
 cases$AllCases <- cases$cumAllCases - lag(cases$cumAllCases)
 cases$AllCases[1] <- cases$cumAllCases[1]
-cases <- cases[, c(1, 2, 7, 8)]
+cases <- cases[7:26, c(1, 2, 5)]
 
 
 # Deaths ------------------------------------------------------------------
