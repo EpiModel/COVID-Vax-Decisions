@@ -6,7 +6,6 @@ library("EpiModelCOVID")
 est <- readRDS("../COVID-Vax-Decisions/data/input/est-100000.rds")
 
 # Model parameters
-source("R/01-epi-params.R")
 param <- param.net(
   inf.prob = c(0.05, 0.05), # per layer; calibrated
   inf.diff = 0.015,
@@ -80,7 +79,7 @@ init <- init.net(e.num = 1600)
 
 control <- control.net(
   nsteps = 180 + 608,
-  nsims = 1,
+  nsims = 10,
   ncores = 1,
   initialize.FUN = init_covid_vax_decisions,
   aging.FUN = aging_covid,
