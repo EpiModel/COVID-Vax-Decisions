@@ -9,6 +9,11 @@ est <- readRDS("../COVID-Vax-Decisions/data/input/est-100000.rds")
 source("R/01-epi-params.R")
 param <- param.net(
   inf.prob = c(0.05, 0.05), # per layer; calibrated
+  inf.diff = 0.015,
+  inf.boost.start = 180 + c(-30, 350),
+  inf.boost.stop = 180 + c(15, 396),
+  inf.supp.start =  180 + c(16, 274, 397),
+  inf.supp.stop = 180 + c(151, 334, 608),
   act.rate = c(3, 1), # per layer; calibrated
   inf.prob.a.rr = 0.5, # from Kristin
   act.rate.dx.inter.rr = 1, # turning off for now
