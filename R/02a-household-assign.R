@@ -27,7 +27,7 @@ age.pyr <- c( 0.01167, 0.01179, 0.01209, 0.01232, 0.01260, 0.01279, 0.01271,
               0.00259, 0.00223, 0.00193, 0.00166, 0.00144, 0.00124, 0.00107,
               0.00092, 0.00080, 0.00069, 0.00059, 0.00051, 0.00044, 0.00038,
               0.00033, 0.00028)
-age <- attr_age <- sample(x = 0:99, size = n, prob = age.pyr, replace = TRUE)
+age <- sample(x = 0:99, size = n, prob = age.pyr, replace = TRUE)
 age_noise <- runif(n)
 age <- age + age_noise
 

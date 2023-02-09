@@ -2,7 +2,6 @@
 library("EpiModelCOVID")
 
 # Read in fitted network models
-#est <- readRDS("data/input/est.rds")
 est <- readRDS("../COVID-Vax-Decisions/data/input/est-100000.rds")
 
 # Model parameters
@@ -48,12 +47,9 @@ param <- param.net(
   vax3.interval = 180, # 6 months
   vax4.interval = 120, # 4 months
   se.prob = c(0.18, 0.18, 0.18, 0.18), # per dose; from Chrissian et al
-  # inf.nudge.prob = 0.072, # from Yadete et al (65.8 vs. 58.6% booster willingness for those with vs. without infected friends/family)
-  # se.nudge.prob = 0.073, # from Chrissian et al (61.6 vs. 68.8% booster willingness for those with vs. without missed work due to SE)
-  # bt.nudge.prob = 0.125, # from Dziedzic et al (66 vs. 78.5% booster willingness for those with vs. without previous infection)
-  inf.nudge.prob = 0,
-  se.nudge.prob = 0,
-  bt.nudge.prob = 0,
+  hosp.nudge.prob = .102, # derived from https://www.kff.org/coronavirus-covid-19/poll-finding/kff-covid-19-vaccine-monitor-september-2021/
+  se.nudge.prob = 0.073, # from Chrissian et al (61.6 vs. 68.8% booster willingness for those with vs. without missed work due to SE)
+  bt.nudge.prob = 0.125, # from Dziedzic et al (66 vs. 78.5% booster willingness for those with vs. without previous infection)
   vax1.rr.infect = 0.324, # from Katy
   vax2.rr.infect = 0.112, # from Katy
   vax3.rr.infect = 0.12, # from Katy
@@ -71,8 +67,9 @@ param <- param.net(
   mort.rates = mr_vec, # from Kristin (age <1, 1-4, 5-9, 10-14, ... 80-84, 85+)
   mort.dis.mult = 180, # from Katy
   half.life = 80, # from Katy
-  # vax.willing.prob = c(0.7, 0.75, 0.85) # from Kelly et al; age 18 - 49, 50 - 64, 65+
-  vax.willing.prob = c(1, 1, 1)
+  vax.willing.prob = c(0.7, 0.75, 0.85), # from Kelly et al; age 18 - 49, 50 - 64, 65+
+  hosp.th = 0.00036, #from covid.cdc.gov/covid-data-tracker/#hospital-capacity
+  hosp.flag = 0
 )
 
 init <- init.net(e.num = 1600)
