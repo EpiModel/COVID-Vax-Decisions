@@ -12,7 +12,7 @@ param <- param.net(
   inf.boost.stop = 180 + c(15, 396),
   inf.supp.start =  180 + c(16, 274, 397),
   inf.supp.stop = 180 + c(151, 334, 608),
-  act.rate = c(3, 1), # per layer; calibrated
+  act.rate = c(1, 3), # per layer; calibrated
   inf.prob.a.rr = 0.5, # from Kristin
   act.rate.dx.inter.rr = 1, # turning off for now
   act.rate.dx.inter.time = Inf, # turning off for now
@@ -69,7 +69,8 @@ param <- param.net(
   half.life = 80, # from Katy
   vax.willing.prob = c(0.7, 0.75, 0.85), # from Kelly et al; age 18 - 49, 50 - 64, 65+
   hosp.th = 0.00036, #from covid.cdc.gov/covid-data-tracker/#hospital-capacity
-  hosp.flag = 0
+  hosp.flag = 0,
+  hh.pairs = hhPairs
 )
 
 init <- init.net(e.num = 1600)
