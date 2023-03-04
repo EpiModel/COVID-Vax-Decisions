@@ -1,17 +1,13 @@
-
 library("EpiModelCOVID")
-
-# Read in fitted network models
-est <- readRDS("../COVID-Vax-Decisions/data/input/est-100000.rds")
 
 # Model parameters
 param <- param.net(
   inf.prob = c(0.05, 0.05), # per layer; calibrated
-  inf.diff = 0.015,
-  inf.boost.start = 180 + c(-30, 350),
-  inf.boost.stop = 180 + c(15, 396),
-  inf.supp.start =  180 + c(16, 274, 397),
-  inf.supp.stop = 180 + c(151, 334, 608),
+  inf.diff = 0.015, # calibrated
+  inf.boost.start = 180 + c(-30, 350), # calibrated
+  inf.boost.stop = 180 + c(15, 396), # calibrated
+  inf.supp.start =  180 + c(16, 274, 397), # calibrated
+  inf.supp.stop = 180 + c(151, 334, 608), # calibrated
   act.rate = c(1, 3), # per layer; calibrated
   inf.prob.a.rr = 0.5, # from Kristin
   act.rate.dx.inter.rr = 1, # turning off for now
@@ -19,14 +15,14 @@ param <- param.net(
   act.rate.sympt.inter.rr = 1, # turning off for now
   act.rate.sympt.inter.time = Inf, # turning off for now
   prop.clinical = c(0.573, 0.642, 0.760, 0.800, 0.813, 0.814, 0.769, 0.723, 0.666), # by decade of age; from Kristin
-  prop.hospit = c(0.060, 0.063, 0.081, 0.154, 0.207, 0.268, 0.357, 0.465, 0.539), # by decade of age; from Kristin
+  prop.hospit = c(0.060, 0.063, 0.081, 0.154, 0.207, 0.268, 0.357, 0.465, 0.539) / 10, # by decade of age; starting point from Kristin; calibrated
   ea.rate = 1 / 5.5, # from https://academic.oup.com/cid/article/74/9/1678/6359063 (duration of latent period)
   ar.rate = 1 / 5.0, # from Kristin (duration of subclinical infectious period)
   eip.rate = 1 / 5.5, # from https://academic.oup.com/cid/article/74/9/1678/6359063 (duration of latent period)
   ipic.rate = 1 / 1.5, # from Kristin (duration of preclinical infectious period)
   icr.rate = 1 / 3.5, # from Kristin (duration of clinical infectious period prior to recovery)
   ich.rate = 1 / 3, # from Kristin (duration of clinical infectious period prior to hosp)
-  hr.rate = 1 / 4, # from Kristin (duration of hospitalization prior to recovery)
+  hr.rate = 1 / 10, # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7899024/
   rs.rate = 1 / 270, # https://www.cdc.gov/coronavirus/2019-ncov/science/science-briefs/vaccine-induced-immunity.html 
   pcr.sens = 0.8, # from Kristin
   dx.rate.sympt = 0.1, # from Katy
@@ -65,19 +61,18 @@ param <- param.net(
   a.rate = mean(mr_vec), # assumed 
   arrival.age = 0, # assumed
   mort.rates = mr_vec, # from Kristin (age <1, 1-4, 5-9, 10-14, ... 80-84, 85+)
-  mort.dis.mult = 180, # from Katy
+  mort.dis.mult = 180 * 10, # from Katy
   half.life = 80, # from Katy
   vax.willing.prob = c(0.7, 0.75, 0.85), # from Kelly et al; age 18 - 49, 50 - 64, 65+
   hosp.th = 0.00036, #from covid.cdc.gov/covid-data-tracker/#hospital-capacity
-  hosp.flag = 0,
-  hh.pairs = hhPairs
+  hh.pairs = hhPairs # from algorithm
 )
 
 init <- init.net(e.num = 1600)
 
 control <- control.net(
   nsteps = 180 + 608,
-  nsims = 10,
+  nsims = 1,
   ncores = 1,
   initialize.FUN = init_covid_vax_decisions,
   aging.FUN = aging_covid,
