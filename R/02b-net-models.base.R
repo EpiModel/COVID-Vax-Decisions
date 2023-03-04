@@ -17,8 +17,8 @@ names(hhPairs) <- c(".head", ".tail")
 md.cc <- 13.8 # from Nelson et al
 target.stats.cc <- c(md.cc * n / 2,
                      as.numeric(table(age.grp)[3] * md.cc * 0.41), # from Nelson et al
-                     as.numeric(table(age.grp)[1] * md.cc / 2) * 0.69, # from Prem et al
-                     as.numeric(table(age.grp)[2] * md.cc / 2) * 0.81, # from Prem et al
+                     as.numeric(table(age.grp)[1] * md.cc / 2) * 0.69, # from Prem et al. Note: replaced md.cc with 17.11 after initial run to account for differential md by age
+                     as.numeric(table(age.grp)[2] * md.cc / 2) * 0.81, # from Prem et al. Note: replaced md.cc with 14.52 after initial run to account for differential md by age
                      as.numeric(table(age.grp)[3] * md.cc * 0.41 / 2) * 0.21) # from Prem et al 
 formation.cc <- ~edges + nodefactor("age.grp", levels = 3) + 
   nodematch("age.grp", diff = TRUE, levels = 1:3)
@@ -43,4 +43,3 @@ dx.cc <- netdx(est.cc, nsims = 1000, dynamic = FALSE,
 
 est <- list(est.cc)
 est <- lapply(est, trim_netest)
-saveRDS(est, file = "data/input/est.rds")
