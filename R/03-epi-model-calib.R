@@ -31,10 +31,10 @@ param <- param.net(
   vax1.start = 180 + c(534, 132, 84, 74, 11), # age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax3.start = 180 + c(Inf, 368, 323, 323, 265), # age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax4.start = 180 + c(Inf, Inf, Inf, 453, 453), # age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax1.rate = c(0.0005, 0.002, 0.012, 0.012, 0.02), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax1.rate.half.life = c(365, 200, 80, 80, 100), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax1.rate = c(0.0005, 0.002, 0.021, 0.021, 0.02), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax1.rate.half.life = c(365, 220, 160, 160, 365), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax2.rate = c(0.01, 0.54, 0.65, 0.65, 0.25), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax2.rate.half.life = c(365, 80, 30, 30, 40), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax2.rate.half.life = c(365, 60, 30, 30, 40), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax3.rate = c(0, 0.005, 0.01, 0.025, 0.02), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax3.rate.half.life = c(NA, 60, 35, 30, 50), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax4.rate = c(0, 0, 0, 0.005, 0.005), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
@@ -63,7 +63,7 @@ param <- param.net(
   mort.rates = mr_vec, # from Kristin (age <1, 1-4, 5-9, 10-14, ... 80-84, 85+)
   mort.dis.mult = 180 * 10, # from Katy
   half.life = 80, # from Katy
-  vax.willing.prob = c(0.7, 0.75, 0.85), # from Kelly et al; age 18 - 49, 50 - 64, 65+
+  vax.willing.prob = c(0.7, 0.75, 0.91), # from Kelly et al and Nikolovski et al; age 18 - 49, 50 - 64, 65+
   hosp.th = 0.00036, #from covid.cdc.gov/covid-data-tracker/#hospital-capacity
   hh.pairs = hhPairs # from algorithm
 )
@@ -72,7 +72,7 @@ init <- init.net(e.num = 1600)
 
 control <- control.net(
   nsteps = 180 + 608,
-  nsims = 1,
+  nsims = 10,
   ncores = 1,
   initialize.FUN = init_covid_vax_decisions,
   aging.FUN = aging_covid,

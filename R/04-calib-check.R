@@ -53,7 +53,7 @@ deaths <- deaths[7:26, c(1, 2 , 9, 10, 11)]
 
 # Vaccine coverage --------------------------------------------------------
 
-for (i in 1:3) {
+for (i in 1:10) {
   vax_cov <- data.frame(cov.vax1.0to4 = sim[["epi"]][["cov_vax1_0to4"]][, i],
                         cov.vax1.5to17 = sim[["epi"]][["cov_vax1_5to17"]][, i],
                         cov.vax1.18to64 = sim[["epi"]][["cov_vax1_18to64"]][, i],
@@ -77,5 +77,29 @@ for (i in 1:3) {
   vax_cov <- as.data.frame(sapply(vax_cov, function(x) round(x, 3)*100))
   vax_cov$ts <- 1:nrow(vax_cov)
   vax_cov <- merge(times, vax_cov, by.x = "DayNum", by.y = "ts")
+  vax_cov <- vax_cov %>% rowid_to_column("ROW")
   assign(paste0("vax_cov_summary", i), vax_cov)
 }
+
+all_vax_cov <- bind_rows(vax_cov_summary1, vax_cov_summary2, vax_cov_summary3,
+                         vax_cov_summary4, vax_cov_summary5, vax_cov_summary6,
+                         vax_cov_summary7, vax_cov_summary8, vax_cov_summary9,
+                         vax_cov_summary10)
+all_vax_cov <- all_vax_cov %>% group_by(ROW) %>% 
+  summarise(DayNum = min(DayNum),
+            Month = min(Month),
+            cov.vax1.0to4 = mean(cov.vax1.0to4), 
+            cov.vax1.5to17 = mean(cov.vax1.5to17), 
+            cov.vax1.18to64 = mean(cov.vax1.18to64),
+            cov.vax1.65p = mean(cov.vax1.65p),
+            cov.vax2.0to4 = mean(cov.vax2.0to4),
+            cov.vax2.5to17 = mean(cov.vax2.5to17),
+            cov.vax2.18to64 = mean(cov.vax2.18to64),
+            cov.vax2.65p = mean(cov.vax2.65p),
+            cov.vax3.5to17 = mean(cov.vax3.5to17),
+            cov.vax3.18to49 = mean(cov.vax3.18to49),
+            cov.vax3.50to64 = mean(cov.vax3.50to64),
+            cov.vax3.65p = mean(cov.vax3.65p),
+            cov.vax4.50to64 = mean(cov.vax4.50to64),
+            cov.vax4.65p = mean(cov.vax4.65p))
+
