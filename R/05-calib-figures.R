@@ -1,0 +1,374 @@
+# Setup -------------------------------------------------------------------
+
+suppressWarnings(suppressMessages(library(ggplot2)))
+suppressWarnings(suppressMessages(library(tidyverse)))
+suppressWarnings(suppressMessages(library(tidyr)))
+suppressWarnings(suppressMessages(library(dplyr)))
+suppressWarnings(suppressMessages(library(patchwork)))
+
+times <- data.frame(DayNum = c(788, 757, 726, 696, 665, 635, 604, 576, 545, 514, 
+                               484, 453, 423, 392, 361, 331, 300, 270, 239, 211,
+                               180, 149, 119, 88, 58, 27),
+                    Month = c("Aug-22", "Jul-22", "Jun-22", "May-22", "Apr-22",
+                              "Mar-22", "Feb-22", "Jan-22", "Dec-21", "Nov-21",
+                              "Oct-21", "Sep-21", "Aug-21", "Jul-21", "Jun-21",
+                              "May-21", "Apr-21", "Mar-21", "Feb-21", "Jan-21",
+                              "Dec-20", "Nov-20", "Oct-20", "Sep-20", "Aug-20",
+                              "Jul-20"))
+times <- times %>% map_df(rev)
+
+# Cases -------------------------------------------------------------------
+
+case_targets <- c(8373, 3165, 1590, 1301, 784, 382, 1439, 7256, 6079,
+                  1981, 958, 6259, 19544, 3194, 1278, 701, 1749, 2988,
+                  4000, 3504)
+
+for (i in 1:10){
+  cases <- sim[["epi"]][["se.flow"]][, i]
+  cases[1] <- 0
+  cases <- data.frame(ts = 1:length(cases), cases = cases)
+  cases$cumCases <- cumsum(cases$cases)
+  
+  cases <- merge(times, cases, by.x = "DayNum", by.y = "ts")
+  cases$cases <- cases$cumCases - lag(cases$cumCases)
+  cases <- cases[7:26, c(2, 3)]
+  cases <- cases %>% rowid_to_column("ROW")
+  assign(paste0("cases_", i), cases)
+}
+
+names <- paste0("cases_", 1:10)
+cases_all_runs <- bind_rows(mget(names))
+cases_all_runs <- cases_all_runs %>% group_by(ROW) %>% 
+  summarise(Month = min(Month), `Min Result` = min(cases), `Mean Result` = mean(cases), `Max Result` = max(cases))
+
+cases_all_runs$`Target (Empirical)` <- case_targets
+cases_all_runs_long <- gather(cases_all_runs, type, value, c("Min Result", "Mean Result", "Max Result", "Target (Empirical)"), factor_key=TRUE)
+
+f1 <- ggplot(data = cases_all_runs_long, aes(x=ROW, y=value, group=type)) +
+  geom_line(aes(linetype=type, color = type))+
+  scale_linetype_manual(values=c("dashed", "solid", "dashed", "solid")) +
+  scale_color_manual(values = c("darkblue", "darkblue", "darkblue", "deepskyblue")) + 
+  scale_x_continuous(expand = c(0,0),
+                     limits = c(1, 20),
+                     breaks = c(1, 4, 7, 10, 13, 16, 19),
+                     labels = c("1" = "Jan 21", "4" = "Apr 21", "7" = "Jul 21", 
+                                "10" = "Oct 21", "13" = "Jan 22", "16" = "Apr 22",
+                                "19" = "Jul 22")) +
+  scale_y_continuous(expand = c(0, 0), lim = c(0, 25000)) + 
+  xlab("Month") +
+  ylab("Incident Infections") +
+  theme(legend.title=element_blank()) +
+  ggtitle("Infections")
+
+# Hospitalizations --------------------------------------------------------
+
+hosp_targets <- c(113, 47, 27, 24, 16, 9, 27, 98, 66, 24, 12, 44, 88, 31, 9, 5,
+                  9, 19, 29, 26)
+
+for (i in 1:10){
+  hosp <- sim[["epi"]][["ich.flow"]][, i]
+  hosp[1] <- 0
+  hosp <- data.frame(ts = 1:length(hosp), hosp = hosp)
+  hosp$cumHosp <- cumsum(hosp$hosp)
+  
+  hosp <- merge(times, hosp, by.x = "DayNum", by.y = "ts")
+  hosp$hosp <- hosp$cumHosp - lag(hosp$cumHosp)
+  hosp <- hosp[7:26, c(2, 3)]
+  hosp <- hosp %>% rowid_to_column("ROW")
+  assign(paste0("hosp_", i), hosp)
+}
+
+names <- paste0("hosp_", 1:10)
+hosp_all_runs <- bind_rows(mget(names))
+hosp_all_runs <- hosp_all_runs %>% group_by(ROW) %>% 
+  summarise(Month = min(Month), `Min Result` = min(hosp), `Mean Result` = mean(hosp), `Max Result` = max(hosp))
+
+hosp_all_runs$`Target (Empirical)` <- hosp_targets
+hosp_all_runs_long <- gather(hosp_all_runs, type, value, c("Min Result", "Mean Result", "Max Result", "Target (Empirical)"), factor_key=TRUE)
+
+f2 <- ggplot(data = hosp_all_runs_long, aes(x=ROW, y=value, group=type)) +
+  geom_line(aes(linetype=type, color = type))+
+  scale_linetype_manual(values=c("dashed", "solid", "dashed", "solid")) +
+  scale_color_manual(values = c("darkblue", "darkblue", "darkblue", "deepskyblue")) + 
+  scale_x_continuous(expand = c(0,0),
+                     limits = c(1, 20),
+                     breaks = c(1, 4, 7, 10, 13, 16, 19),
+                     labels = c("1" = "Jan 21", "4" = "Apr 21", "7" = "Jul 21", 
+                                "10" = "Oct 21", "13" = "Jan 22", "16" = "Apr 22",
+                                "19" = "Jul 22")) +
+  scale_y_continuous(expand = c(0, 0), lim = c(0, 250)) + 
+  xlab("Month") +
+  ylab("Incident Hospitalizations") +
+  theme(legend.title=element_blank()) +
+  ggtitle("Hospitalizations")
+
+# Deaths ------------------------------------------------------------------
+
+death_targets <- c(25, 23, 14, 9, 5, 4, 2, 9, 26, 22, 8, 7, 11, 20, 13, 5, 2,
+                   2, 3, 5 )
+
+for (i in 1:10){
+  death <- sim[["epi"]][["d.h.flow"]][, i]
+  death[1] <- 0
+  death <- data.frame(ts = 1:length(death), death = death)
+  death$cumDeath <- cumsum(death$death)
+  
+  death <- merge(times, death, by.x = "DayNum", by.y = "ts")
+  death$death <- death$cumDeath - lag(death$cumDeath)
+  death <- death[7:26, c(2, 3)]
+  death <- death %>% rowid_to_column("ROW")
+  assign(paste0("death_", i), death)
+}
+
+names <- paste0("death_", 1:10)
+death_all_runs <- bind_rows(mget(names))
+death_all_runs <- death_all_runs %>% group_by(ROW) %>% 
+  summarise(Month = min(Month), `Min Result` = min(death), `Mean Result` = mean(death), `Max Result` = max(death))
+
+death_all_runs$`Target (Empirical)` <- death_targets
+death_all_runs_long <- gather(death_all_runs, type, value, c("Min Result", "Mean Result", "Max Result", "Target (Empirical)"), factor_key=TRUE)
+
+f3 <- ggplot(data = death_all_runs_long, aes(x=ROW, y=value, group=type)) +
+  geom_line(aes(linetype=type, color = type))+
+  scale_linetype_manual(values=c("dashed", "solid", "dashed", "solid")) +
+  scale_color_manual(values = c("darkblue", "darkblue", "darkblue", "deepskyblue")) + 
+  scale_x_continuous(expand = c(0,0),
+                     limits = c(1, 20),
+                     breaks = c(1, 4, 7, 10, 13, 16, 19),
+                     labels = c("1" = "Jan 21", "4" = "Apr 21", "7" = "Jul 21", 
+                                "10" = "Oct 21", "13" = "Jan 22", "16" = "Apr 22",
+                                "19" = "Jul 22")) +
+  scale_y_continuous(expand = c(0, 0), lim = c(0, 60)) + 
+  xlab("Month") +
+  ylab("Incident Deaths") +
+  theme(legend.title=element_blank()) +
+  ggtitle("Deaths")
+
+
+combined <- f1 + f2 + f3 & theme(legend.position = "bottom")
+combined + plot_layout(ncol = 1, guides = "collect")
+ggsave("Figure4.tiff", dpi=300, compression = 'lzw')
+
+
+# Vaccine Coverage --------------------------------------------------------
+for (i in 1:10) {
+  vax_cov <- data.frame(cov.vax1.0to4 = sim[["epi"]][["cov_vax1_0to4"]][, i],
+                        cov.vax1.5to17 = sim[["epi"]][["cov_vax1_5to17"]][, i],
+                        cov.vax1.18to64 = sim[["epi"]][["cov_vax1_18to64"]][, i],
+                        cov.vax1.65p = sim[["epi"]][["cov_vax1_65p"]][, i],
+                        cov.vax2.0to4 = sim[["epi"]][["cov_vax2_0to4"]][, i],
+                        cov.vax2.5to17 = sim[["epi"]][["cov_vax2_5to17"]][, i],
+                        cov.vax2.18to64 = sim[["epi"]][["cov_vax2_18to64"]][, i],
+                        cov.vax2.65p = sim[["epi"]][["cov_vax2_65p"]][, i],
+                        cov.vax3.5to17 = sim[["epi"]][["cov_vax3_5to17"]][, i],
+                        cov.vax3.18to49 = sim[["epi"]][["cov_vax3_18to49"]][, i],
+                        cov.vax3.50to64 = sim[["epi"]][["cov_vax3_50to64"]][, i],
+                        cov.vax3.65p = sim[["epi"]][["cov_vax3_65p"]][, i],
+                        cov.vax4.50to64 = sim[["epi"]][["cov_vax4_50to64"]][, i],
+                        cov.vax4.65p = sim[["epi"]][["cov_vax4_65p"]][, i])
+  vax_cov[is.na(vax_cov)] <- 0
+  colnames(vax_cov) <- c("cov.vax1.0to4", "cov.vax1.5to17", "cov.vax1.18to64",
+                         "cov.vax1.65p", "cov.vax2.0to4", "cov.vax2.5to17", 
+                         "cov.vax2.18to64", "cov.vax2.65p", "cov.vax3.5to17",
+                         "cov.vax3.18to49", "cov.vax3.50to64", "cov.vax3.65p",
+                         "cov.vax4.50to64", "cov.vax4.65p")
+  vax_cov <- as.data.frame(sapply(vax_cov, function(x) round(x, 3)*100))
+  vax_cov$ts <- 1:nrow(vax_cov)
+  vax_cov <- merge(times, vax_cov, by.x = "DayNum", by.y = "ts")
+  vax_cov <- vax_cov[7:26, ]
+  vax_cov <- vax_cov %>% rowid_to_column("ROW")
+  assign(paste0("vax_cov_summary_", i), vax_cov)
+}
+
+names <- paste0("vax_cov_summary_", 1:10)
+vax_all_runs <- bind_rows(mget(names))
+
+vax_all_runs <- vax_all_runs %>% group_by(ROW) %>% 
+  summarise(mean.vax1.0to4 = mean(cov.vax1.0to4), 
+            mean.vax1.5to17 = mean(cov.vax1.5to17), 
+            mean.vax1.18to64 = mean(cov.vax1.18to64),
+            mean.vax1.65p = mean(cov.vax1.65p),
+            mean.vax2.0to4 = mean(cov.vax2.0to4),
+            mean.vax2.5to17 = mean(cov.vax2.5to17),
+            mean.vax2.18to64 = mean(cov.vax2.18to64),
+            mean.vax2.65p = mean(cov.vax2.65p),
+            mean.vax3.5to17 = mean(cov.vax3.5to17),
+            mean.vax3.18to49 = mean(cov.vax3.18to49),
+            mean.vax3.50to64 = mean(cov.vax3.50to64),
+            mean.vax3.65p = mean(cov.vax3.65p),
+            mean.vax4.50to64 = mean(cov.vax4.50to64),
+            mean.vax4.65p = mean(cov.vax4.65p),
+            min.vax1.0to4 = min(cov.vax1.0to4), 
+            min.vax1.5to17 = min(cov.vax1.5to17), 
+            min.vax1.18to64 = min(cov.vax1.18to64),
+            min.vax1.65p = min(cov.vax1.65p),
+            min.vax2.0to4 = min(cov.vax2.0to4),
+            min.vax2.5to17 = min(cov.vax2.5to17),
+            min.vax2.18to64 = min(cov.vax2.18to64),
+            min.vax2.65p = min(cov.vax2.65p),
+            min.vax3.5to17 = min(cov.vax3.5to17),
+            min.vax3.18to49 = min(cov.vax3.18to49),
+            min.vax3.50to64 = min(cov.vax3.50to64),
+            min.vax3.65p = min(cov.vax3.65p),
+            min.vax4.50to64 = min(cov.vax4.50to64),
+            min.vax4.65p = min(cov.vax4.65p),
+            max.vax1.0to4 = max(cov.vax1.0to4), 
+            max.vax1.5to17 = max(cov.vax1.5to17), 
+            max.vax1.18to64 = max(cov.vax1.18to64),
+            max.vax1.65p = max(cov.vax1.65p),
+            max.vax2.0to4 = max(cov.vax2.0to4),
+            max.vax2.5to17 = max(cov.vax2.5to17),
+            max.vax2.18to64 = max(cov.vax2.18to64),
+            max.vax2.65p = max(cov.vax2.65p),
+            max.vax3.5to17 = max(cov.vax3.5to17),
+            max.vax3.18to49 = max(cov.vax3.18to49),
+            max.vax3.50to64 = max(cov.vax3.50to64),
+            max.vax3.65p = max(cov.vax3.65p),
+            max.vax4.50to64 = max(cov.vax4.50to64),
+            max.vax4.65p = max(cov.vax4.65p))
+
+targets_vax <- read_csv("/Users/ayanthiwallrafen/Desktop/targets.csv")
+
+vax_all_runs <- cbind(vax_all_runs, targets_vax)
+
+colors <- c("Dose 1: Result" = "darkblue", "Dose 2: Result" = "darkgreen", "Dose 3: Result" = "darkred", "Dose 4: Result" = "darkorchid4",
+            "Dose 1: Target" = "deepskyblue", "Dose 2: Target" = "chartreuse", "Dose 3: Target" = "deeppink", "Dose 4: Target" = "purple")
+
+
+
+# Age Group 1 -------------------------------------------------------------
+
+vax_all_runs_1 <- vax_all_runs[, c("ROW", "mean.vax1.0to4", "mean.vax2.0to4", "min.vax1.0to4", "min.vax2.0to4", "max.vax1.0to4", "max.vax2.0to4", "target.vax1.0to4", "target.vax2.0to4")]
+
+v1 <- ggplot(data = vax_all_runs_1, aes(x = ROW, y = mean.vax1.0to4)) + 
+  geom_ribbon(data=vax_all_runs_1, aes(ymin = min.vax1.0to4, ymax = max.vax1.0to4), fill="darkblue", alpha=0.3) + 
+  geom_ribbon(data=vax_all_runs_1, aes(ymin = min.vax2.0to4, ymax = max.vax2.0to4), fill="darkgreen", alpha=0.3) +
+  geom_line(aes(y = mean.vax1.0to4, color = "Dose 1: Result")) + 
+  geom_line(aes(y = mean.vax2.0to4, color = "Dose 2: Result")) + 
+  geom_line(aes(y = target.vax1.0to4, color = "Dose 1: Target")) + 
+  geom_line(aes(y = target.vax2.0to4, color = "Dose 2: Target")) +
+  scale_x_continuous(expand = c(0,0),
+                     limits = c(1, 20),
+                     breaks = c(1, 7, 13, 19),
+                     labels = c("1" = "Jan 21", "7" = "Jul 21", 
+                                "13" = "Jan 22", "19" = "Jul 22")) +
+  xlab("Month") +
+  ylab("Vaccine Coverage (%)") +
+  ggtitle("Ages 0 to 4") + 
+  scale_color_manual(values = colors) +
+  theme(legend.position = "none")
+
+
+# Age Group 2 -------------------------------------------------------------
+
+vax_all_runs_2 <- vax_all_runs[, c("ROW", "mean.vax1.5to17", "mean.vax2.5to17", "mean.vax3.5to17", "min.vax1.5to17", "min.vax2.5to17", "min.vax3.5to17", "max.vax1.5to17", "max.vax2.5to17", "max.vax3.5to17", "target.vax1.5to17", "target.vax2.5to17", "target.vax3.5to17")]
+
+v2 <- ggplot(data = vax_all_runs_2, aes(x = ROW, y = mean.vax1.5to17)) + 
+  geom_ribbon(data=vax_all_runs_2, aes(ymin = min.vax1.5to17, ymax = max.vax1.5to17), fill="darkblue", alpha=0.3) + 
+  geom_ribbon(data=vax_all_runs_2, aes(ymin = min.vax2.5to17, ymax = max.vax2.5to17), fill="darkgreen", alpha=0.3) +
+  geom_ribbon(data=vax_all_runs_2, aes(ymin = min.vax3.5to17, ymax = max.vax3.5to17), fill="darkred", alpha=0.3) +
+  geom_line(aes(y = mean.vax1.5to17, color = "Dose 1: Result")) + 
+  geom_line(aes(y = mean.vax2.5to17, color = "Dose 2: Result")) + 
+  geom_line(aes(y = mean.vax3.5to17, color = "Dose 3: Result")) +
+  geom_line(aes(y = target.vax1.5to17, color = "Dose 1: Target")) + 
+  geom_line(aes(y = target.vax2.5to17, color = "Dose 2: Target")) +
+  geom_line(aes(y = target.vax3.5to17, color = "Dose 3: Target")) +
+  scale_x_continuous(expand = c(0,0),
+                     limits = c(1, 20),
+                     breaks = c(1, 7, 13, 19),
+                     labels = c("1" = "Jan 21", "7" = "Jul 21", 
+                                "13" = "Jan 22", "19" = "Jul 22")) +
+  xlab("Month") +
+  ylab("Vaccine Coverage (%)") +
+  ggtitle("Ages 5 to 17") + 
+  scale_color_manual(values = colors) +
+  theme(legend.position = "none")
+
+
+
+# Age Group 3 -------------------------------------------------------------
+
+vax_all_runs_3 <- vax_all_runs[, c("ROW", "mean.vax1.18to64", "mean.vax2.18to64", "mean.vax3.18to49", "min.vax1.18to64", "min.vax2.18to64", "min.vax3.18to49", "max.vax1.18to64", "max.vax2.18to64", "max.vax3.18to49", "target.vax1.18to64", "target.vax2.18to64", "target.vax3.18to49")]
+
+v3 <- ggplot(data = vax_all_runs_3, aes(x = ROW, y = mean.vax1.18to64)) + 
+  geom_ribbon(data=vax_all_runs_3, aes(ymin = min.vax1.18to64, ymax = max.vax1.18to64), fill="darkblue", alpha=0.3) + 
+  geom_ribbon(data=vax_all_runs_3, aes(ymin = min.vax2.18to64, ymax = max.vax2.18to64), fill="darkgreen", alpha=0.3) +
+  geom_ribbon(data=vax_all_runs_3, aes(ymin = min.vax3.18to49, ymax = max.vax3.18to49), fill="darkred", alpha=0.3) +
+  geom_line(aes(y = mean.vax1.18to64, color = "Dose 1: Result")) + 
+  geom_line(aes(y = mean.vax2.18to64, color = "Dose 2: Result")) + 
+  geom_line(aes(y = mean.vax3.18to49, color = "Dose 3: Result")) +
+  geom_line(aes(y = target.vax1.18to64, color = "Dose 1: Target")) + 
+  geom_line(aes(y = target.vax2.18to64, color = "Dose 2: Target")) +
+  geom_line(aes(y = target.vax3.18to49, color = "Dose 3: Target")) +
+  scale_x_continuous(expand = c(0,0),
+                     limits = c(1, 20),
+                     breaks = c(1, 7, 13, 19),
+                     labels = c("1" = "Jan 21", "7" = "Jul 21", 
+                                "13" = "Jan 22", "19" = "Jul 22")) +
+  xlab("Month") +
+  ylab("Vaccine Coverage (%)") +
+  ggtitle("Ages 18 to 49") + 
+  scale_color_manual(values = colors) +
+  theme(legend.position = "none")
+
+
+# Age Group 4 -------------------------------------------------------------
+
+vax_all_runs_4 <- vax_all_runs[, c("ROW", "mean.vax1.18to64", "mean.vax2.18to64", "mean.vax3.50to64", "mean.vax4.50to64", "min.vax1.18to64", "min.vax2.18to64", "min.vax3.50to64", "min.vax4.50to64", "max.vax1.18to64", "max.vax2.18to64", "max.vax3.50to64", "max.vax4.50to64", "target.vax1.18to64", "target.vax2.18to64", "target.vax3.50to64", "target.vax4.50to64")]
+
+v4 <- ggplot(data = vax_all_runs_4, aes(x = ROW, y = mean.vax1.18to64)) + 
+  geom_ribbon(data=vax_all_runs_4, aes(ymin = min.vax1.18to64, ymax = max.vax1.18to64), fill="darkblue", alpha=0.3) + 
+  geom_ribbon(data=vax_all_runs_4, aes(ymin = min.vax2.18to64, ymax = max.vax2.18to64), fill="darkgreen", alpha=0.3) +
+  geom_ribbon(data=vax_all_runs_4, aes(ymin = min.vax3.50to64, ymax = max.vax3.50to64), fill="darkred", alpha=0.3) +
+  geom_ribbon(data=vax_all_runs_4, aes(ymin = min.vax4.50to64, ymax = max.vax4.50to64), fill="darkorchid4", alpha=0.3) +
+  geom_line(aes(y = mean.vax1.18to64, color = "Dose 1: Result")) + 
+  geom_line(aes(y = mean.vax2.18to64, color = "Dose 2: Result")) + 
+  geom_line(aes(y = mean.vax3.50to64, color = "Dose 3: Result")) +
+  geom_line(aes(y = mean.vax4.50to64, color = "Dose 4: Result")) +
+  geom_line(aes(y = target.vax1.18to64, color = "Dose 1: Target")) + 
+  geom_line(aes(y = target.vax2.18to64, color = "Dose 2: Target")) +
+  geom_line(aes(y = target.vax3.50to64, color = "Dose 3: Target")) +
+  geom_line(aes(y = target.vax4.50to64, color = "Dose 4: Target")) +
+  scale_x_continuous(expand = c(0,0),
+                     limits = c(1, 20),
+                     breaks = c(1, 7, 13, 19),
+                     labels = c("1" = "Jan 21", "7" = "Jul 21", 
+                                "13" = "Jan 22", "19" = "Jul 22")) +
+  xlab("Month") +
+  ylab("Vaccine Coverage (%)") +
+  ggtitle("Ages 50 to 64") + 
+  scale_color_manual(values = colors) +
+  theme(legend.position = "none")
+
+
+# Age Group 5 -------------------------------------------------------------
+
+vax_all_runs_5 <- vax_all_runs[, c("ROW", "mean.vax1.65p", "mean.vax2.65p", "mean.vax3.65p", "mean.vax4.65p", "min.vax1.65p", "min.vax2.65p", "min.vax3.65p", "min.vax4.65p", "max.vax1.65p", "max.vax2.65p", "max.vax3.65p", "max.vax4.65p", "target.vax1.65p", "target.vax2.65p", "target.vax3.65p", "target.vax4.65p")]
+
+v5 <- ggplot(data = vax_all_runs_5, aes(x = ROW, y = mean.vax1.65p)) + 
+  geom_ribbon(data=vax_all_runs_5, aes(ymin = min.vax1.65p, ymax = max.vax1.65p), fill="darkblue", alpha=0.3) + 
+  geom_ribbon(data=vax_all_runs_5, aes(ymin = min.vax2.65p, ymax = max.vax2.65p), fill="darkgreen", alpha=0.3) +
+  geom_ribbon(data=vax_all_runs_5, aes(ymin = min.vax3.65p, ymax = max.vax3.65p), fill="darkred", alpha=0.3) +
+  geom_ribbon(data=vax_all_runs_5, aes(ymin = min.vax4.65p, ymax = max.vax4.65p), fill="darkorchid4", alpha=0.3) +
+  geom_line(aes(y = mean.vax1.65p, color = "Dose 1: Result")) + 
+  geom_line(aes(y = mean.vax2.65p, color = "Dose 2: Result")) + 
+  geom_line(aes(y = mean.vax3.65p, color = "Dose 3: Result")) +
+  geom_line(aes(y = mean.vax4.65p, color = "Dose 4: Result")) +
+  geom_line(aes(y = target.vax1.65p, color = "Dose 1: Target")) + 
+  geom_line(aes(y = target.vax2.65p, color = "Dose 2: Target")) +
+  geom_line(aes(y = target.vax3.65p, color = "Dose 3: Target")) +
+  geom_line(aes(y = target.vax4.65p, color = "Dose 4: Target")) +
+  scale_x_continuous(expand = c(0,0),
+                     limits = c(1, 20),
+                     breaks = c(1, 7, 13, 19),
+                     labels = c("1" = "Jan 21", "7" = "Jul 21", 
+                                "13" = "Jan 22", "19" = "Jul 22")) +
+  xlab("Month") +
+  ylab("Vaccine Coverage (%)") +
+  ggtitle("Ages 65+") + 
+  theme(legend.title=element_blank(), legend.position = "bottom") +
+  scale_color_manual(values = colors)
+
+combined <- v1 + v2 + v3 + v4 + v5
+combined + plot_layout(ncol = 3)
+ggsave("Figure5.tiff", dpi=300, compression = 'lzw')
