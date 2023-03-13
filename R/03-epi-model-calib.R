@@ -43,9 +43,9 @@ param <- param.net(
   vax3.interval = 180, # 6 months
   vax4.interval = 120, # 4 months
   se.prob = c(0.18, 0.18, 0.18, 0.18), # per dose; from Chrissian et al
-  hosp.nudge.prob = c(.102, .102, .102), # age 18 - 49, 50 - 64, 65+; derived from https://www.kff.org/coronavirus-covid-19/poll-finding/kff-covid-19-vaccine-monitor-september-2021/
-  se.nudge.prob = c(0.073, 0.073, 0.073), # age 18 - 49, 50 - 64, 65+; from Chrissian et al (61.6 vs. 68.8% booster willingness for those with vs. without missed work due to SE)
-  bt.nudge.prob = c(0.125, 0.125, 0.125), # age 18 - 49, 50 - 64, 65+; from Dziedzic et al (66 vs. 78.5% booster willingness for those with vs. without previous infection)
+  hosp.nudge.prob = c(NA, NA, .102, .102, .102), # by age group; derived from https://www.kff.org/coronavirus-covid-19/poll-finding/kff-covid-19-vaccine-monitor-september-2021/
+  se.nudge.prob = c(NA, NA, 0.073, 0.073, 0.073), # by age group; from Chrissian et al (61.6 vs. 68.8% booster willingness for those with vs. without missed work due to SE)
+  bt.nudge.prob = c(NA, NA, 0.125, 0.125, 0.125), # by age group; from Dziedzic et al (66 vs. 78.5% booster willingness for those with vs. without previous infection)
   vax1.rr.infect = 0.324, # from Katy
   vax2.rr.infect = 0.112, # from Katy
   vax3.rr.infect = 0.12, # from Katy
@@ -72,7 +72,7 @@ init <- init.net(e.num = 1600)
 
 control <- control.net(
   nsteps = 180 + 608,
-  nsims = 10,
+  nsims = 1,
   ncores = 1,
   initialize.FUN = init_covid_vax_decisions,
   aging.FUN = aging_covid,
