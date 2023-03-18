@@ -44,6 +44,7 @@ renv/
 
 # data folder
 data/input/
+data/output/
 
 #RProj file
 COVID-Vax-Decisions.Rproj
