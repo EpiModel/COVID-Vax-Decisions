@@ -1,55 +1,3 @@
-
-# Setup -------------------------------------------------------------------
-
-library("EpiModel")
-
-merge_simfiles <- function(simno, indir = "data/", vars = NULL,  truncate.at = NULL, verbose = TRUE) {
-  
-  fn <- list.files(indir, pattern = paste0("sim.old.target.", simno, ".[0-9].rds"), full.names = TRUE)
-  
-  if (length(fn) == 0) {
-    stop("No files of that simno in the specified indir", call. = FALSE)
-  }
-  
-  for (i in seq_along(fn)) {
-    sim <- readRDS(fn[i])
-    
-    if (!is.null(truncate.at)) {
-      sim <- truncate_sim(sim, truncate.at)
-    }
-    
-    sim$network <- NULL
-    sim$attr <- NULL
-    sim$temp <- NULL
-    sim$el <- NULL
-    sim$p <- NULL
-    
-    if (inherits(sim, "list") && all(c("epi", "param", "control") %in% names(sim))) {
-      class(sim) <- "netsim"
-    }
-    
-    if (!is.null(vars)) {
-      sim$epi <- sim$epi[vars]
-      sim$stats <- NULL
-      if (!is.null(sim$riskh)) {
-        sim$riskh <- NULL
-      }
-    }
-    
-    if (i == 1) {
-      out <- sim
-    } else {
-      out <- merge(out, sim, param.error = FALSE, keep.other = FALSE)
-    }
-    
-    if (verbose == TRUE) {
-      cat("File ", i, "/", length(fn), " Loaded ... \n", sep = "")
-    }
-  }
-  
-  return(out)
-}
-
 # Old Targeting Scenarios --------------------------------------------------
 
 # sim.old.target1010.X.rds - hosp.nudge.prob doubled, bt.nudge.prob at baseline
@@ -165,7 +113,8 @@ g_inc_cont_old <- ggplot(cInc.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scal
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY") + ggtitle("Targeting Older Adults (65+)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY") + 
+  ggtitle("Targeting Older Adults (65+)") +
   coord_fixed()
 
 g_inc_dis_old <- ggplot(cInc.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
@@ -176,7 +125,9 @@ g_inc_dis_old <- ggplot(cInc.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY", labels = c("67'100 - 67'400", "67'400 - 67'700", "67'700 - 68'000")) + ggtitle("Targeting Older Adults (65+)") +
+  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY", 
+                     labels = c("67'100 - 67'400", "67'400 - 67'700", "67'700 - 68'000")) + 
+  ggtitle("Targeting Older Adults (65+)") +
   coord_fixed()
 
 # Plot deaths
@@ -188,7 +139,8 @@ g_death_cont_old <- ggplot(cDeaths.old, aes(hosp.nudge.prob.scale, bt.nudge.prob
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY") + ggtitle("Targeting Older Adults (65+)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY") + 
+  ggtitle("Targeting Older Adults (65+)") +
   coord_fixed()
 
 g_death_dis_old <- ggplot(cDeaths.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
@@ -199,7 +151,9 @@ g_death_dis_old <- ggplot(cDeaths.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY", labels = c("117 - 118", "118 - 120", "120 - 121")) + ggtitle("Targeting Older Adults (65+)") +
+  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY", 
+                     labels = c("117 - 118", "118 - 120", "120 - 121")) + 
+  ggtitle("Targeting Older Adults (65+)") +
   coord_fixed()
 
 
@@ -212,7 +166,8 @@ g_dose_cont_old <- ggplot(cDoses.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.s
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Doses") + ggtitle("Targeting Older Adults (65+)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Doses") + 
+  ggtitle("Targeting Older Adults (65+)") +
   coord_fixed()
 
 g_dose_dis_old <- ggplot(cDoses.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
@@ -223,5 +178,7 @@ g_dose_dis_old <- ggplot(cDoses.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.sc
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Doses", labels = c("149'700 - 149'800", "149'800 - 149'900", "149'900 - 150'000")) + ggtitle("Targeting Older Adults (65+)") +
+  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Doses", 
+                     labels = c("149'700 - 149'800", "149'800 - 149'900", "149'900 - 150'000")) + 
+  ggtitle("Targeting Older Adults (65+)") +
   coord_fixed()

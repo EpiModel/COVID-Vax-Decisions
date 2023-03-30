@@ -5,53 +5,6 @@ library("EpiModel")
 library("ggplot2")
 library("patchwork")
 
-merge_simfiles <- function(simno, indir = "data/", vars = NULL,  truncate.at = NULL, verbose = TRUE) {
-  
-  fn <- list.files(indir, pattern = paste0("sim.*", simno, ".[0-9].rds"), full.names = TRUE)
-  
-  if (length(fn) == 0) {
-    stop("No files of that simno in the specified indir", call. = FALSE)
-  }
-  
-  for (i in seq_along(fn)) {
-    sim <- readRDS(fn[i])
-    
-    if (!is.null(truncate.at)) {
-      sim <- truncate_sim(sim, truncate.at)
-    }
-    
-    sim$network <- NULL
-    sim$attr <- NULL
-    sim$temp <- NULL
-    sim$el <- NULL
-    sim$p <- NULL
-    
-    if (inherits(sim, "list") && all(c("epi", "param", "control") %in% names(sim))) {
-      class(sim) <- "netsim"
-    }
-    
-    if (!is.null(vars)) {
-      sim$epi <- sim$epi[vars]
-      sim$stats <- NULL
-      if (!is.null(sim$riskh)) {
-        sim$riskh <- NULL
-      }
-    }
-    
-    if (i == 1) {
-      out <- sim
-    } else {
-      out <- merge(out, sim, param.error = FALSE, keep.other = FALSE)
-    }
-    
-    if (verbose == TRUE) {
-      cat("File ", i, "/", length(fn), " Loaded ... \n", sep = "")
-    }
-  }
-  
-  return(out)
-}
-
 createPlotData <- function(sim)
 {
   cases <- sim[["epi"]][["se.flow"]]
@@ -82,9 +35,6 @@ createPlotData <- function(sim)
 colors <- c("Dose 1" = "dodgerblue4", "Dose 2" = "darkgreen", "Dose 3" = "darkred", "Dose 4" = "darkorchid4")
 
 # Baseline ----------------------------------------------------------------
-
-baseline <- readRDS("data/output/baseline-sims.rds")
-baseline <- truncate_sim(baseline, 181)
 
 plot_data1 <- createPlotData(baseline)
 

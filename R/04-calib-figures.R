@@ -18,9 +18,12 @@ times <- data.frame(DayNum = c(788, 757, 726, 696, 665, 635, 604, 576, 545, 514,
 times <- times %>% map_df(rev)
 
 colors1 <- c("Result" = "dodgerblue4", "Target (Empirical)" = "deepskyblue")
-colors <- c("Dose 1: Result" = "dodgerblue4", "Dose 2: Result" = "darkgreen", "Dose 3: Result" = "darkred", "Dose 4: Result" = "darkorchid4",
-            "Dose 1: Target" = "deepskyblue", "Dose 2: Target" = "chartreuse", "Dose 3: Target" = "deeppink", "Dose 4: Target" = "purple")
+colors <- c("Dose 1: Result" = "dodgerblue4", "Dose 2: Result" = "darkgreen", 
+            "Dose 3: Result" = "darkred", "Dose 4: Result" = "darkorchid4",
+            "Dose 1: Target" = "deepskyblue", "Dose 2: Target" = "chartreuse", 
+            "Dose 3: Target" = "deeppink", "Dose 4: Target" = "purple")
 
+baseline_sims <- readRDS("data/output/baseline-sims.rds")
 
 # Cases -------------------------------------------------------------------
 
@@ -229,27 +232,43 @@ vax_all_runs <- vax_all_runs %>% group_by(ROW) %>%
             max.vax4.50to64 = max(cov.vax4.50to64),
             max.vax4.65p = max(cov.vax4.65p))
 
-targets_vax <- read_csv("/Users/ayanthiwallrafen/Desktop/targets.csv")
-
-vax_all_runs <- cbind(vax_all_runs, targets_vax)
+vax_targets <- rbind(vax_targets, c("February 2021", rep(NA, 14)))
+vax_targets <- rbind(vax_targets, c("January 2021", rep(NA, 14)))
+names(vax_targets) <- c("Month", "target.vax1.0to4", "target.vax1.5to17", 
+                        "target.vax1.18to64", "target.vax1.65p", "target.vax2.0to4", 
+                        "target.vax2.5to17", "target.vax2.18to64", "target.vax2.65p", 
+                        "target.vax3.5to17", "target.vax3.18to49", "target.vax3.50to64", 
+                        "target.vax3.65p", "target.vax4.50to64", "target.vax4.65p")
+vax_targets <- vax_targets %>% mutate_at(c("target.vax1.0to4", "target.vax1.5to17", 
+                                           "target.vax1.18to64", "target.vax1.65p", 
+                                           "target.vax2.0to4", "target.vax2.5to17", 
+                                           "target.vax2.18to64", "target.vax2.65p", 
+                                           "target.vax3.5to17", "target.vax3.18to49", 
+                                           "target.vax3.50to64", "target.vax3.65p", 
+                                           "target.vax4.50to64", "target.vax4.65p"), as.numeric)
+vax_targets <- vax_targets %>% map_df(rev)
+vax_all_runs <- cbind(vax_all_runs, vax_targets)
 
 # Age Group 1 -------------------------------------------------------------
 
-vax_all_runs_1 <- vax_all_runs[, c("ROW", "mean.vax1.0to4", "mean.vax2.0to4", "min.vax1.0to4", "min.vax2.0to4", "max.vax1.0to4", "max.vax2.0to4", "target.vax1.0to4", "target.vax2.0to4")]
+vax_all_runs_1 <- vax_all_runs[, c("ROW", "mean.vax1.0to4", "mean.vax2.0to4", 
+                                   "min.vax1.0to4",  "min.vax2.0to4", 
+                                   "max.vax1.0to4", "max.vax2.0to4", 
+                                   "target.vax1.0to4", "target.vax2.0to4")]
 
 v1 <- ggplot(data = vax_all_runs_1, aes(x = ROW, y = mean.vax1.0to4)) + 
   geom_ribbon(data=vax_all_runs_1, aes(ymin = min.vax1.0to4, ymax = max.vax1.0to4), fill="dodgerblue4", alpha=0.5) + 
   geom_ribbon(data=vax_all_runs_1, aes(ymin = min.vax2.0to4, ymax = max.vax2.0to4), fill="darkgreen", alpha=0.5) +
   geom_line(aes(y = mean.vax1.0to4, color = "Dose 1: Result")) + 
   geom_line(aes(y = mean.vax2.0to4, color = "Dose 2: Result")) + 
-  geom_line(aes(y = target.vax1.0to4, color = "Dose 1: Target")) + 
+  geom_line(aes(y = target.vax1.0to4, color = "Dose 1: Target")) +
   geom_line(aes(y = target.vax2.0to4, color = "Dose 2: Target")) +
   scale_x_continuous(expand = c(0,0),
                      limits = c(1, 20),
                      breaks = c(1, 7, 13, 19),
-                     labels = c("1" = "Jan 21", "7" = "Jul 21", 
+                     labels = c("1" = "Jan 21", "7" = "Jul 21",
                                 "13" = "Jan 22", "19" = "Jul 22")) +
-  scale_y_continuous(expand = c(0, 0)) + 
+  scale_y_continuous(expand = c(0, 0)) +
   xlab("Month") +
   ylab("Vaccine Coverage (%)") +
   ggtitle("Ages 0 to 4") + 
@@ -259,7 +278,11 @@ v1 <- ggplot(data = vax_all_runs_1, aes(x = ROW, y = mean.vax1.0to4)) +
 
 # Age Group 2 -------------------------------------------------------------
 
-vax_all_runs_2 <- vax_all_runs[, c("ROW", "mean.vax1.5to17", "mean.vax2.5to17", "mean.vax3.5to17", "min.vax1.5to17", "min.vax2.5to17", "min.vax3.5to17", "max.vax1.5to17", "max.vax2.5to17", "max.vax3.5to17", "target.vax1.5to17", "target.vax2.5to17", "target.vax3.5to17")]
+vax_all_runs_2 <- vax_all_runs[, c("ROW", "mean.vax1.5to17", "mean.vax2.5to17", 
+                                   "mean.vax3.5to17", "min.vax1.5to17", "min.vax2.5to17", 
+                                   "min.vax3.5to17", "max.vax1.5to17", "max.vax2.5to17", 
+                                   "max.vax3.5to17", "target.vax1.5to17", 
+                                   "target.vax2.5to17", "target.vax3.5to17")]
 
 v2 <- ggplot(data = vax_all_runs_2, aes(x = ROW, y = mean.vax1.5to17)) + 
   geom_ribbon(data=vax_all_runs_2, aes(ymin = min.vax1.5to17, ymax = max.vax1.5to17), fill="dodgerblue4", alpha=0.5) + 
@@ -287,7 +310,12 @@ v2 <- ggplot(data = vax_all_runs_2, aes(x = ROW, y = mean.vax1.5to17)) +
 
 # Age Group 3 -------------------------------------------------------------
 
-vax_all_runs_3 <- vax_all_runs[, c("ROW", "mean.vax1.18to64", "mean.vax2.18to64", "mean.vax3.18to49", "min.vax1.18to64", "min.vax2.18to64", "min.vax3.18to49", "max.vax1.18to64", "max.vax2.18to64", "max.vax3.18to49", "target.vax1.18to64", "target.vax2.18to64", "target.vax3.18to49")]
+vax_all_runs_3 <- vax_all_runs[, c("ROW", "mean.vax1.18to64", "mean.vax2.18to64", 
+                                   "mean.vax3.18to49", "min.vax1.18to64", 
+                                   "min.vax2.18to64", "min.vax3.18to49", 
+                                   "max.vax1.18to64", "max.vax2.18to64", 
+                                   "max.vax3.18to49", "target.vax1.18to64", 
+                                   "target.vax2.18to64", "target.vax3.18to49")]
 
 v3 <- ggplot(data = vax_all_runs_3, aes(x = ROW, y = mean.vax1.18to64)) + 
   geom_ribbon(data=vax_all_runs_3, aes(ymin = min.vax1.18to64, ymax = max.vax1.18to64), fill="dodgerblue4", alpha=0.5) + 
@@ -314,7 +342,14 @@ v3 <- ggplot(data = vax_all_runs_3, aes(x = ROW, y = mean.vax1.18to64)) +
 
 # Age Group 4 -------------------------------------------------------------
 
-vax_all_runs_4 <- vax_all_runs[, c("ROW", "mean.vax1.18to64", "mean.vax2.18to64", "mean.vax3.50to64", "mean.vax4.50to64", "min.vax1.18to64", "min.vax2.18to64", "min.vax3.50to64", "min.vax4.50to64", "max.vax1.18to64", "max.vax2.18to64", "max.vax3.50to64", "max.vax4.50to64", "target.vax1.18to64", "target.vax2.18to64", "target.vax3.50to64", "target.vax4.50to64")]
+vax_all_runs_4 <- vax_all_runs[, c("ROW", "mean.vax1.18to64", "mean.vax2.18to64", 
+                                   "mean.vax3.50to64", "mean.vax4.50to64", 
+                                   "min.vax1.18to64", "min.vax2.18to64", 
+                                   "min.vax3.50to64", "min.vax4.50to64", 
+                                   "max.vax1.18to64", "max.vax2.18to64", 
+                                   "max.vax3.50to64", "max.vax4.50to64", 
+                                   "target.vax1.18to64", "target.vax2.18to64", 
+                                   "target.vax3.50to64", "target.vax4.50to64")]
 
 v4 <- ggplot(data = vax_all_runs_4, aes(x = ROW, y = mean.vax1.18to64)) + 
   geom_ribbon(data=vax_all_runs_4, aes(ymin = min.vax1.18to64, ymax = max.vax1.18to64), fill="dodgerblue4", alpha=0.5) + 
@@ -344,7 +379,12 @@ v4 <- ggplot(data = vax_all_runs_4, aes(x = ROW, y = mean.vax1.18to64)) +
 
 # Age Group 5 -------------------------------------------------------------
 
-vax_all_runs_5 <- vax_all_runs[, c("ROW", "mean.vax1.65p", "mean.vax2.65p", "mean.vax3.65p", "mean.vax4.65p", "min.vax1.65p", "min.vax2.65p", "min.vax3.65p", "min.vax4.65p", "max.vax1.65p", "max.vax2.65p", "max.vax3.65p", "max.vax4.65p", "target.vax1.65p", "target.vax2.65p", "target.vax3.65p", "target.vax4.65p")]
+vax_all_runs_5 <- vax_all_runs[, c("ROW", "mean.vax1.65p", "mean.vax2.65p", 
+                                   "mean.vax3.65p", "mean.vax4.65p", "min.vax1.65p", 
+                                   "min.vax2.65p", "min.vax3.65p", "min.vax4.65p", 
+                                   "max.vax1.65p", "max.vax2.65p", "max.vax3.65p", 
+                                   "max.vax4.65p", "target.vax1.65p", "target.vax2.65p", 
+                                   "target.vax3.65p", "target.vax4.65p")]
 
 v5 <- ggplot(data = vax_all_runs_5, aes(x = ROW, y = mean.vax1.65p)) + 
   geom_ribbon(data=vax_all_runs_5, aes(ymin = min.vax1.65p, ymax = max.vax1.65p), fill="navy", alpha=0.5) + 

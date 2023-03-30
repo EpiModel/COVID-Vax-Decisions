@@ -5,7 +5,7 @@ library("EpiModel")
 
 merge_simfiles <- function(simno, indir = "data/", vars = NULL,  truncate.at = NULL, verbose = TRUE) {
   
-  fn <- list.files(indir, pattern = paste0("sim.", simno, ".[0-9].rds"), full.names = TRUE)
+  fn <- list.files(indir, pattern = paste0("sim.*", simno, ".[0-9].rds"), full.names = TRUE)
   
   if (length(fn) == 0) {
     stop("No files of that simno in the specified indir", call. = FALSE)
@@ -175,7 +175,8 @@ baseline <- truncate_sim(baseline, 181)
 
 # Vaccine coverage by age group and dose
 table2 <- table2_fill(baseline, 1, table2)
-ref_doses <- median(colSums(baseline$epi$nVax1) + colSums(baseline$epi$nVax2) + colSums(baseline$epi$nVax3) + colSums(baseline$epi$nVax4))
+ref_doses <- median(colSums(baseline$epi$nVax1) + colSums(baseline$epi$nVax2) + 
+                      colSums(baseline$epi$nVax3) + colSums(baseline$epi$nVax4))
 
 # Infections
 table3 <- table3_fill(baseline, 1, table3)
@@ -240,7 +241,6 @@ table3 <- table3_fill(sim.1065, 5, table3, ref_inf = ref_inf, ref_doses = ref_do
 table4 <- table4_fill(sim.1065, 5, table4, ref_deaths = ref_deaths, ref_doses = ref_doses)
 
 # sim.1120.X.rds - hosp.nudge.prob doubled, bt.nudge.prob at at 0
-# NOTE - hosp.flag tends to be triggered later in this scenario than when bt.nudge.prob is higher!!
 # load and merge files
 sim.1120 <- merge_simfiles(1120, indir = "data/output/no-targeting-sims", vars = NULL,  truncate.at = 181, verbose = TRUE)
 # check params
@@ -301,7 +301,8 @@ g_inc_cont <- ggplot(cInc, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY") + ggtitle("Targeting All Adults (18+)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY") + 
+  ggtitle("Targeting All Adults (18+)") +
   coord_fixed()
 
 g_inc_dis <- ggplot(cInc, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
@@ -312,7 +313,9 @@ g_inc_dis <- ggplot(cInc, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY", labels = c("67'100 - 67'400", "67'400 - 67'700", "67'700 - 67'900")) + ggtitle("Targeting All Adults (18+)") +
+  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY", 
+                     labels = c("67'100 - 67'400", "67'400 - 67'700", "67'700 - 67'900")) + 
+  ggtitle("Targeting All Adults (18+)") +
   coord_fixed()
 
 # Plot deaths
@@ -324,7 +327,8 @@ g_death_cont <- ggplot(cDeaths, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale))
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY") + ggtitle("Targeting All Adults (18+)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY") + 
+  ggtitle("Targeting All Adults (18+)") +
   coord_fixed()
 
 g_death_dis <- ggplot(cDeaths, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
@@ -335,7 +339,9 @@ g_death_dis <- ggplot(cDeaths, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) 
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY", labels = c("116 - 118", "118 - 120", "120 - 122")) + ggtitle("Targeting All Adults (18+)") +
+  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY", 
+                     labels = c("116 - 118", "118 - 120", "120 - 122")) + 
+  ggtitle("Targeting All Adults (18+)") +
   coord_fixed()
 
 
@@ -348,7 +354,8 @@ g_dose_cont <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Doses") + ggtitle("Targeting All Adults (18+)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Doses") + 
+  ggtitle("Targeting All Adults (18+)") +
   coord_fixed()
 
 g_dose_dis <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
@@ -359,5 +366,7 @@ g_dose_dis <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP  (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Doses", labels = c("149'700 - 150'200", "150'200 - 150'800", "150'800 - 151'300")) + ggtitle("Targeting All Adults (18+)") +
+  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Doses", 
+                     labels = c("149'700 - 150'200", "150'200 - 150'800", "150'800 - 151'300")) + 
+  ggtitle("Targeting All Adults (18+)") +
   coord_fixed()

@@ -11,9 +11,9 @@ Pop50To64 <- 2047689
 Pop65Plus <- 1585687
 
 #Vaccines administered from CDC data
-vax_data <- read_excel("/Users/ayanthiwallrafen/Desktop/temp.xlsx")
+vax_data <- read_excel("data/input/vax_data.xlsx")
 vax_data$Month <- as.Date(vax_data$Date) 
-vax_data <- vax_data[, c(21, 3:20)]
+vax_data <- vax_data[, c(39, seq(3, 37, 2))]
 
 #combine data for 5+ and 12+ groups
 vax_data$Administered_Dose1_Recip_5Plus[vax_data$Administered_Dose1_Recip_5Plus == 0 | is.na(vax_data$Administered_Dose1_Recip_5Plus)] <- vax_data$Administered_Dose1_Recip_12Plus[vax_data$Administered_Dose1_Recip_5Plus == 0 | is.na(vax_data$Administered_Dose1_Recip_5Plus)]
