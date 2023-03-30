@@ -249,6 +249,7 @@ v1 <- ggplot(data = vax_all_runs_1, aes(x = ROW, y = mean.vax1.0to4)) +
                      breaks = c(1, 7, 13, 19),
                      labels = c("1" = "Jan 21", "7" = "Jul 21", 
                                 "13" = "Jan 22", "19" = "Jul 22")) +
+  scale_y_continuous(expand = c(0, 0)) + 
   xlab("Month") +
   ylab("Vaccine Coverage (%)") +
   ggtitle("Ages 0 to 4") + 
@@ -275,6 +276,7 @@ v2 <- ggplot(data = vax_all_runs_2, aes(x = ROW, y = mean.vax1.5to17)) +
                      breaks = c(1, 7, 13, 19),
                      labels = c("1" = "Jan 21", "7" = "Jul 21", 
                                 "13" = "Jan 22", "19" = "Jul 22")) +
+  scale_y_continuous(expand = c(0, 0)) + 
   xlab("Month") +
   ylab("Vaccine Coverage (%)") +
   ggtitle("Ages 5 to 17") + 
@@ -302,6 +304,7 @@ v3 <- ggplot(data = vax_all_runs_3, aes(x = ROW, y = mean.vax1.18to64)) +
                      breaks = c(1, 7, 13, 19),
                      labels = c("1" = "Jan 21", "7" = "Jul 21", 
                                 "13" = "Jan 22", "19" = "Jul 22")) +
+  scale_y_continuous(expand = c(0, 0)) + 
   xlab("Month") +
   ylab("Vaccine Coverage (%)") +
   ggtitle("Ages 18 to 49") + 
@@ -331,6 +334,7 @@ v4 <- ggplot(data = vax_all_runs_4, aes(x = ROW, y = mean.vax1.18to64)) +
                      breaks = c(1, 7, 13, 19),
                      labels = c("1" = "Jan 21", "7" = "Jul 21", 
                                 "13" = "Jan 22", "19" = "Jul 22")) +
+  scale_y_continuous(expand = c(0, 0)) + 
   xlab("Month") +
   ylab("Vaccine Coverage (%)") +
   ggtitle("Ages 50 to 64") + 
@@ -360,6 +364,7 @@ v5 <- ggplot(data = vax_all_runs_5, aes(x = ROW, y = mean.vax1.65p)) +
                      breaks = c(1, 7, 13, 19),
                      labels = c("1" = "Jan 21", "7" = "Jul 21", 
                                 "13" = "Jan 22", "19" = "Jul 22")) +
+  scale_y_continuous(expand = c(0, 0)) + 
   xlab("Month") +
   ylab("Vaccine Coverage (%)") +
   ggtitle("Ages 65+") + 

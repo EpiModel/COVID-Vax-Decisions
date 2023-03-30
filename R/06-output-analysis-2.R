@@ -124,10 +124,17 @@ cDeaths.old <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), bt.nudge.prob.sc
 cDoses.old <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), bt.nudge.prob.scale = rep(NA, 121), cDoses = rep(NA, 121))
 
 for (i in 1001:1120) {
+  
+  print(i)
+  
   temp <- merge_simfiles(i, indir = "data/output/old-targeting-sims", vars = NULL,  truncate.at = 181, verbose = TRUE)
   
   scale.1 <- temp$param$hosp.nudge.prob[5] / 0.102
   scale.2 <- temp$param$bt.nudge.prob[5] / 0.125
+  
+  if (is.na(scale.1) | (is.na(scale.2))) {
+    stop("Missing parameter")
+  }
   
   scenario.cInc <- median(colSums(temp$epi$se.flow)) / 1.67
   scenario.cDeaths <- median(colSums(temp$epi$d.h.flow)) / 1.67
@@ -157,8 +164,9 @@ g_inc_cont_old <- ggplot(cInc.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scal
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hospitalization Nudge Probability (% of Baseline)", y = "Breakthrough Nudge Probability (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY") + ggtitle("Targeting Older Adults (65+)")
+  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY") + ggtitle("Targeting Older Adults (65+)") +
+  coord_fixed()
 
 g_inc_dis_old <- ggplot(cInc.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = tertiles), interpolate = TRUE) +
@@ -167,8 +175,9 @@ g_inc_dis_old <- ggplot(cInc.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hospitalization Nudge Probability (% of Baseline)", y = "Breakthrough Nudge Probability (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY", labels = c("? - ?", "? - ?", "? - ?")) + ggtitle("Targeting Older Adults (65+)")
+  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
+  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY", labels = c("67'100 - 67'400", "67'400 - 67'700", "67'700 - 68'000")) + ggtitle("Targeting Older Adults (65+)") +
+  coord_fixed()
 
 # Plot deaths
 g_death_cont_old <- ggplot(cDeaths.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
@@ -178,8 +187,9 @@ g_death_cont_old <- ggplot(cDeaths.old, aes(hosp.nudge.prob.scale, bt.nudge.prob
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hospitalization Nudge Probability (% of Baseline)", y = "Breakthrough Nudge Probability (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY") + ggtitle("Targeting Older Adults (65+)")
+  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY") + ggtitle("Targeting Older Adults (65+)") +
+  coord_fixed()
 
 g_death_dis_old <- ggplot(cDeaths.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = tertiles), interpolate = TRUE) +
@@ -188,20 +198,22 @@ g_death_dis_old <- ggplot(cDeaths.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hospitalization Nudge Probability (% of Baseline)", y = "Breakthrough Nudge Probability (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY", labels = c("? - ?", "? - ?", "? - ?")) + ggtitle("Targeting Older Adults (65+)")
+  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
+  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY", labels = c("117 - 118", "118 - 120", "120 - 121")) + ggtitle("Targeting Older Adults (65+)") +
+  coord_fixed()
 
 
 # Plot doses
-d_dose_cont_old <- ggplot(cDoses.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
+g_dose_cont_old <- ggplot(cDoses.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = cDoses), interpolate = TRUE) +
   #geom_contour(aes(z = cDoses), col = "white", alpha = 0.5, lwd = 0.5) +
   #geom_text_contour(aes(z = cDoses), stroke = 0.1) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hospitalization Nudge Probability (% of Baseline)", y = "Breakthrough Nudge Probability (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Doses") + ggtitle("Targeting Older Adults (65+)")
+  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Doses") + ggtitle("Targeting Older Adults (65+)") +
+  coord_fixed()
 
 g_dose_dis_old <- ggplot(cDoses.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = tertiles), interpolate = TRUE) +
@@ -210,5 +222,6 @@ g_dose_dis_old <- ggplot(cDoses.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.sc
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hospitalization Nudge Probability (% of Baseline)", y = "Breakthrough Nudge Probability (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Doses", labels = c("? - ?", "? - ?", "? - ?")) + ggtitle("Targeting Older Adults (65+)")
+  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
+  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Doses", labels = c("149'700 - 149'800", "149'800 - 149'900", "149'900 - 150'000")) + ggtitle("Targeting Older Adults (65+)") +
+  coord_fixed()

@@ -74,17 +74,17 @@ table4 <- data.frame(scenario = c("Baseline", "No Targeting 1", "No Targeting 2"
                      CDeaths = NA, DeathsAverted = NA, PctAverted = NA, AvertedPerDose = NA)
 
 table2_fill <- function(sim, rownum, table2) {
-  end_cov_vax1_18to64 <- round(quantile(as.numeric(sim$epi$cov_vax1_18to64[608, ]), probs = c(.125, 0.5, .875)), 3) * 100
-  end_cov_vax2_18to64 <- round(quantile(as.numeric(sim$epi$cov_vax2_18to64[608, ]), probs = c(.125, 0.5, .875)), 3) * 100
-  end_cov_vax3_18to49 <- round(quantile(as.numeric(sim$epi$cov_vax3_18to49[608, ]), probs = c(.125, 0.5, .875)), 3) * 100
+  end_cov_vax1_18to64 <- round(quantile(as.numeric(sim$epi$cov_vax1_18to64[608, ]), probs = c(.25, 0.5, .75)), 3) * 100
+  end_cov_vax2_18to64 <- round(quantile(as.numeric(sim$epi$cov_vax2_18to64[608, ]), probs = c(.25, 0.5, .75)), 3) * 100
+  end_cov_vax3_18to49 <- round(quantile(as.numeric(sim$epi$cov_vax3_18to49[608, ]), probs = c(.25, 0.5, .75)), 3) * 100
   
-  end_cov_vax3_50to64 <- round(quantile(as.numeric(sim$epi$cov_vax3_50to64[608, ]), probs = c(.125, 0.5, .875)), 3) * 100
-  end_cov_vax4_50to64 <- round(quantile(as.numeric(sim$epi$cov_vax4_50to64[608, ]), probs = c(.125, 0.5, .875)), 3) * 100
+  end_cov_vax3_50to64 <- round(quantile(as.numeric(sim$epi$cov_vax3_50to64[608, ]), probs = c(.25, 0.5, .75)), 3) * 100
+  end_cov_vax4_50to64 <- round(quantile(as.numeric(sim$epi$cov_vax4_50to64[608, ]), probs = c(.25, 0.5, .75)), 3) * 100
   
-  end_cov_vax1_65p <- round(quantile(as.numeric(sim$epi$cov_vax1_65p[608, ]), probs = c(.125, 0.5, .875)), 3) * 100
-  end_cov_vax2_65p <- round(quantile(as.numeric(sim$epi$cov_vax2_65p[608, ]), probs = c(.125, 0.5, .875)), 3) * 100
-  end_cov_vax3_65p <- round(quantile(as.numeric(sim$epi$cov_vax3_65p[608, ]), probs = c(.125, 0.5, .875)), 3) * 100
-  end_cov_vax4_65p <- round(quantile(as.numeric(sim$epi$cov_vax4_65p[608, ]), probs = c(.125, 0.5, .875)), 3) * 100
+  end_cov_vax1_65p <- round(quantile(as.numeric(sim$epi$cov_vax1_65p[608, ]), probs = c(.25, 0.5, .75)), 3) * 100
+  end_cov_vax2_65p <- round(quantile(as.numeric(sim$epi$cov_vax2_65p[608, ]), probs = c(.25, 0.5, .75)), 3) * 100
+  end_cov_vax3_65p <- round(quantile(as.numeric(sim$epi$cov_vax3_65p[608, ]), probs = c(.25, 0.5, .75)), 3) * 100
+  end_cov_vax4_65p <- round(quantile(as.numeric(sim$epi$cov_vax4_65p[608, ]), probs = c(.25, 0.5, .75)), 3) * 100
   
   table2[rownum, 2] <- paste0(end_cov_vax1_18to64[2], " (", end_cov_vax1_18to64[1], ", ", end_cov_vax1_18to64[3], ")")
   table2[rownum, 3] <- paste0(end_cov_vax2_18to64[2], " (", end_cov_vax2_18to64[1], ", ", end_cov_vax2_18to64[3], ")")
@@ -105,7 +105,7 @@ table2_fill <- function(sim, rownum, table2) {
 
 table4_fill <- function(sim, rownum, table4, ref_deaths = NA, ref_doses = NA){
   deaths <- sim$epi$d.h.flow
-  cDeaths <- quantile(colSums(deaths), probs = c(.125, 0.5, .875))
+  cDeaths <- quantile(colSums(deaths), probs = c(.25, 0.5, .75))
   cDeaths_scaled <- round(cDeaths / 1.67, 1)
   table4[rownum, 2] <- paste0(cDeaths_scaled[2], " (", cDeaths_scaled[1], ", ", cDeaths_scaled[3], ")")
   
@@ -128,7 +128,7 @@ table4_fill <- function(sim, rownum, table4, ref_deaths = NA, ref_doses = NA){
     total_deaths_averted <- ref_deaths - total_deaths 
     averted_per_dose <- total_deaths_averted / addtl_doses
     
-    averted_per_dose <- round(quantile(averted_per_dose, probs = c(.125, 0.5, .875)), 1)
+    averted_per_dose <- round(quantile(averted_per_dose, probs = c(.25, 0.5, .75)), 1)
     
     table4[rownum, 5] <- paste0(averted_per_dose[2], " (", averted_per_dose[1], ", ", averted_per_dose[3], ")")
   }
@@ -137,7 +137,7 @@ table4_fill <- function(sim, rownum, table4, ref_deaths = NA, ref_doses = NA){
 
 table3_fill <- function(sim, rownum, table3, ref_inf = NA, ref_doses = NA){
   inc <- sim$epi$se.flow
-  cInc <- quantile(colSums(inc), probs = c(.125, 0.5, .875))
+  cInc <- quantile(colSums(inc), probs = c(.25, 0.5, .75))
   cInc_scaled <- round(cInc / 1.67, 1)
   table3[rownum, 2] <- paste0(cInc_scaled[2], " (", cInc_scaled[1], ", ", cInc_scaled[3], ")")
   
@@ -160,7 +160,7 @@ table3_fill <- function(sim, rownum, table3, ref_inf = NA, ref_doses = NA){
     total_inf_averted <- ref_inf - total_inf
     averted_per_dose <- total_inf_averted / addtl_doses
     
-    averted_per_dose <- round(quantile(averted_per_dose, probs = c(.125, 0.5, .875)), 1)
+    averted_per_dose <- round(quantile(averted_per_dose, probs = c(.25, 0.5, .75)), 1)
     
     table3[rownum, 5] <- paste0(averted_per_dose[2], " (", averted_per_dose[1], ", ", averted_per_dose[3], ")")
   }
@@ -260,6 +260,9 @@ cDeaths <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), bt.nudge.prob.scale 
 cDoses <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), bt.nudge.prob.scale = rep(NA, 121), cDoses = rep(NA, 121))
 
 for (i in 1001:1120) {
+  
+  print(i)
+  
   temp <- merge_simfiles(i, indir = "data/output/no-targeting-sims", vars = NULL,  truncate.at = 181, verbose = TRUE)
   
   scale.1 <- temp$param$hosp.nudge.prob[5] / 0.102
@@ -297,8 +300,9 @@ g_inc_cont <- ggplot(cInc, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hospitalization Nudge Probability (% of Baseline)", y = "Breakthrough Nudge Probability (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY") + ggtitle("Targeting All Adults (18+)")
+  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY") + ggtitle("Targeting All Adults (18+)") +
+  coord_fixed()
 
 g_inc_dis <- ggplot(cInc, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = tertiles), interpolate = TRUE) +
@@ -307,8 +311,9 @@ g_inc_dis <- ggplot(cInc, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hospitalization Nudge Probability (% of Baseline)", y = "Breakthrough Nudge Probability (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY", labels = c("67'100 - 67'400", "67'400 - 67'700", "67'700 - 67'900")) + ggtitle("Targeting All Adults (18+)")
+  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
+  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY", labels = c("67'100 - 67'400", "67'400 - 67'700", "67'700 - 67'900")) + ggtitle("Targeting All Adults (18+)") +
+  coord_fixed()
 
 # Plot deaths
 g_death_cont <- ggplot(cDeaths, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
@@ -318,8 +323,9 @@ g_death_cont <- ggplot(cDeaths, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale))
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hospitalization Nudge Probability (% of Baseline)", y = "Breakthrough Nudge Probability (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY") + ggtitle("Targeting All Adults (18+)")
+  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY") + ggtitle("Targeting All Adults (18+)") +
+  coord_fixed()
 
 g_death_dis <- ggplot(cDeaths, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = tertiles), interpolate = TRUE) +
@@ -328,20 +334,22 @@ g_death_dis <- ggplot(cDeaths, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) 
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hospitalization Nudge Probability (% of Baseline)", y = "Breakthrough Nudge Probability (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY", labels = c("116 - 118", "118 - 120", "120 - 122")) + ggtitle("Targeting All Adults (18+)")
+  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
+  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY", labels = c("116 - 118", "118 - 120", "120 - 122")) + ggtitle("Targeting All Adults (18+)") +
+  coord_fixed()
 
 
 # Plot doses
-d_dose_cont <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
+g_dose_cont <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = cDoses), interpolate = TRUE) +
   #geom_contour(aes(z = cDoses), col = "white", alpha = 0.5, lwd = 0.5) +
   #geom_text_contour(aes(z = cDoses), stroke = 0.1) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hospitalization Nudge Probability (% of Baseline)", y = "Breakthrough Nudge Probability (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Doses") + ggtitle("Targeting All Adults (18+)")
+  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Doses") + ggtitle("Targeting All Adults (18+)") +
+  coord_fixed()
 
 g_dose_dis <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = tertiles), interpolate = TRUE) +
@@ -350,5 +358,6 @@ g_dose_dis <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hospitalization Nudge Probability (% of Baseline)", y = "Breakthrough Nudge Probability (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Doses", labels = c("149'700 - 150'200", "150'200 - 150'800", "150'800 - 151'300")) + ggtitle("Targeting All Adults (18+)")
+  labs(x = "HNP  (% of Baseline)", y = "BNP (% of Baseline)") +
+  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Doses", labels = c("149'700 - 150'200", "150'200 - 150'800", "150'800 - 151'300")) + ggtitle("Targeting All Adults (18+)") +
+  coord_fixed()
