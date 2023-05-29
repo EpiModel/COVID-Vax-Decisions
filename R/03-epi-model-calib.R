@@ -33,11 +33,11 @@ param <- param.net(
   vax4.start = 180 + c(Inf, Inf, Inf, 453, 453), # age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax1.rate = c(0.0005, 0.002, 0.021, 0.021, 0.02), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax1.rate.half.life = c(365, 220, 160, 160, 365), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax2.rate = c(0.01, 0.54, 0.65, 0.65, 0.25), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax2.rate.half.life = c(365, 60, 30, 30, 40), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax3.rate = c(0, 0.005, 0.01, 0.025, 0.02), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax3.rate.half.life = c(NA, 60, 35, 30, 50), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
-  vax4.rate = c(0, 0, 0, 0.005, 0.005), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax2.rate = c(0.01, 0.54, 0.25, 0.25, 0.45), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax2.rate.half.life = c(365, 60, 30, 30, 30), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax3.rate = c(0, 0.005, 0.01, 0.025, 0.013), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax3.rate.half.life = c(NA, 60, 35, 30, 75), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
+  vax4.rate = c(0, 0, 0, 0.005, 0.0065), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax4.rate.half.life = c(NA, NA, NA, 60, 80), # manually calibrated; age 0-4, 5-17, 18-49, 50 - 64, 65+
   vax2.interval = 21, # 3 weeks
   vax3.interval = 180, # 6 months
