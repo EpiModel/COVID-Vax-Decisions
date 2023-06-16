@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.2.2",
+    "Version": "4.3.0",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -70,7 +70,7 @@
       "Version": "1.2.0",
       "Source": "Local",
       "RemoteType": "local",
-      "RemoteUrl": "/Users/ayanthiwallrafen/Documents/GitHub/EpiModelCOVID_1.2.0.tar.gz",
+      "RemoteUrl": "/Users/karinawallrafen/Documents/GitHub/EpiModelCOVID_1.2.0.tar.gz",
       "Requirements": [
         "EpiModel",
         "R",
@@ -79,7 +79,7 @@
         "networkLite",
         "tergm"
       ],
-      "Hash": "123bbe4771bc2331957ba79d89d1dc8c"
+      "Hash": "dc44d4021d3fe3ba785d6e5a675926cb"
     },
     "Formula": {
       "Package": "Formula",
@@ -109,7 +109,7 @@
     },
     "Matrix": {
       "Package": "Matrix",
-      "Version": "1.5-3",
+      "Version": "1.5-4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -121,7 +121,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "4006dffe49958d2dd591c17e61e60591"
+      "Hash": "e779c7d9f35cc364438578f334cffee2"
     },
     "R6": {
       "Package": "R6",
@@ -153,20 +153,6 @@
         "utils"
       ],
       "Hash": "e749cae40fa9ef469b6050959517453c"
-    },
-    "RcppArmadillo": {
-      "Package": "RcppArmadillo",
-      "Version": "0.12.0.1.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "Rcpp",
-        "methods",
-        "stats",
-        "utils"
-      ],
-      "Hash": "dee7cfd76b4c78bab84e09b74b6d471f"
     },
     "Rdpack": {
       "Package": "Rdpack",
@@ -608,7 +594,7 @@
     },
     "ergm": {
       "Package": "ergm",
-      "Version": "4.4.0",
+      "Version": "4.5.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -633,7 +619,7 @@
         "tibble",
         "trust"
       ],
-      "Hash": "cd2fb07fc8bf578b1d2b00460ea7d148"
+      "Hash": "4802262e0d3c76041ae5b6a029557386"
     },
     "ergm.ego": {
       "Package": "ergm.ego",
@@ -972,21 +958,6 @@
       ],
       "Hash": "9d27e99cc90bd701c0a7a63e5923f9b7"
     },
-    "htmlwidgets": {
-      "Package": "htmlwidgets",
-      "Version": "1.6.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "grDevices",
-        "htmltools",
-        "jsonlite",
-        "knitr",
-        "rmarkdown",
-        "yaml"
-      ],
-      "Hash": "b677ee5954471eaa974c0d099a343a1a"
-    },
     "httr": {
       "Package": "httr",
       "Version": "1.4.5",
@@ -1015,11 +986,13 @@
     },
     "igraph": {
       "Package": "igraph",
-      "Version": "1.4.1",
+      "Version": "1.4.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "Matrix",
+        "R",
+        "cpp11",
         "grDevices",
         "graphics",
         "magrittr",
@@ -1029,7 +1002,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "a7ef0d811cb66d8be9da0d7b5ab80ded"
+      "Hash": "f7f74f5fbff27d52b1283ac512bc5430"
     },
     "isoband": {
       "Package": "isoband",
@@ -1603,28 +1576,6 @@
       ],
       "Hash": "d66fe009d4c20b7ab1927eb405db9ee2"
     },
-    "rgl": {
-      "Package": "rgl",
-      "Version": "1.0.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "R6",
-        "base64enc",
-        "grDevices",
-        "graphics",
-        "htmltools",
-        "htmlwidgets",
-        "jsonlite",
-        "knitr",
-        "magrittr",
-        "mime",
-        "stats",
-        "utils"
-      ],
-      "Hash": "116f3de82cb82aaa203a0dc3acc341fa"
-    },
     "rlang": {
       "Package": "rlang",
       "Version": "1.0.6",
@@ -1672,7 +1623,7 @@
     },
     "robustbase": {
       "Package": "robustbase",
-      "Version": "0.95-0",
+      "Version": "0.95-1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1683,7 +1634,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "c918476150dd483a23f1d1cab6d17e76"
+      "Hash": "50e6b6ad7801416766716d9fa853e23d"
     },
     "rstudioapi": {
       "Package": "rstudioapi",
@@ -1808,7 +1759,7 @@
     },
     "statnet.common": {
       "Package": "statnet.common",
-      "Version": "4.8.0",
+      "Version": "4.9.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1819,7 +1770,7 @@
         "tools",
         "utils"
       ],
-      "Hash": "6ba17cc9f5d1abe60467ac9d4be04d0f"
+      "Hash": "be35aebf512f7b31de12200d5c3d1d67"
     },
     "stringi": {
       "Package": "stringi",

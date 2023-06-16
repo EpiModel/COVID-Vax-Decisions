@@ -77,3 +77,5 @@ vax_targets$Dose3_50To64[vax_targets$Month < as.Date("2021-12-01")] <- NA
 vax_targets$Dose3_65Plus[vax_targets$Month < as.Date("2021-10-01")] <- NA
 
 vax_targets$Month <- format(as.Date(vax_targets$Month), "%B %Y")
+
+rm(list=setdiff(ls(), c("vax_targets")))

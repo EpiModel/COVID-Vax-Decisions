@@ -9,3 +9,4 @@ mr_pp_pd <- mortality_rate / 1e5 / 365
 age_spans <- c(1, 4, rep(5, 16), 1)
 mr_vec <- rep(mr_pp_pd, times = age_spans)
 
+rm(list=setdiff(ls(), c("vax_targets", "mr_vec")))
