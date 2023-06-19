@@ -5,16 +5,14 @@ suppressWarnings(suppressMessages(library(tidyverse)))
 suppressWarnings(suppressMessages(library(tidyr)))
 suppressWarnings(suppressMessages(library(dplyr)))
 suppressWarnings(suppressMessages(library(patchwork)))
+suppressWarnings(suppressMessages(library(EpiModelCOVID)))
 
-times <- data.frame(DayNum = c(788, 757, 726, 696, 665, 635, 604, 576, 545, 514, 
-                               484, 453, 423, 392, 361, 331, 300, 270, 239, 211,
-                               180, 149, 119, 88, 58, 27),
+times <- data.frame(DayNum = c(608, 577, 546, 516, 485, 455, 424, 396, 365, 334,
+                               304, 273, 243, 212, 181, 151, 120, 90, 59, 31),
                     Month = c("Aug-22", "Jul-22", "Jun-22", "May-22", "Apr-22",
                               "Mar-22", "Feb-22", "Jan-22", "Dec-21", "Nov-21",
                               "Oct-21", "Sep-21", "Aug-21", "Jul-21", "Jun-21",
-                              "May-21", "Apr-21", "Mar-21", "Feb-21", "Jan-21",
-                              "Dec-20", "Nov-20", "Oct-20", "Sep-20", "Aug-20",
-                              "Jul-20"))
+                              "May-21", "Apr-21", "Mar-21", "Feb-21", "Jan-21"))
 times <- times %>% map_df(rev)
 
 colors1 <- c("Result" = "dodgerblue4", "Target (Empirical)" = "deepskyblue")
@@ -23,7 +21,56 @@ colors <- c("Dose 1: Result" = "dodgerblue4", "Dose 2: Result" = "darkgreen",
             "Dose 1: Target" = "deepskyblue", "Dose 2: Target" = "chartreuse", 
             "Dose 3: Target" = "deeppink", "Dose 4: Target" = "purple")
 
-baseline_sims <- readRDS("data/output/baseline-sims.rds")
+merge_simfiles <- function(simno, indir = "data/", vars = NULL,  truncate.at = NULL, verbose = TRUE) {
+  
+  fn <- list.files(indir, pattern = paste0("sim.*", simno, ".[0-9].rds"), full.names = TRUE)
+  
+  if (length(fn) == 0) {
+    stop("No files of that simno in the specified indir", call. = FALSE)
+  }
+  
+  for (i in seq_along(fn)) {
+    sim <- readRDS(fn[i])
+    
+    if (!is.null(truncate.at)) {
+      sim <- truncate_sim(sim, truncate.at)
+    }
+    
+    sim$network <- NULL
+    sim$attr <- NULL
+    sim$temp <- NULL
+    sim$el <- NULL
+    sim$p <- NULL
+    
+    if (inherits(sim, "list") && all(c("epi", "param", "control") %in% names(sim))) {
+      class(sim) <- "netsim"
+    }
+    
+    if (!is.null(vars)) {
+      sim$epi <- sim$epi[vars]
+      sim$stats <- NULL
+      if (!is.null(sim$riskh)) {
+        sim$riskh <- NULL
+      }
+    }
+    
+    if (i == 1) {
+      out <- sim
+    } else {
+      out <- merge(out, sim, param.error = FALSE, keep.other = FALSE)
+    }
+    
+    if (verbose == TRUE) {
+      cat("File ", i, "/", length(fn), " Loaded ... \n", sep = "")
+    }
+  }
+  
+  return(out)
+}
+
+baseline_sims <- merge_simfiles(1000, indir = "data/output/no-targeting-sims", truncate.at = 181, verbose = TRUE)
+baseline_sims$param$hosp.nudge.prob
+baseline_sims$param$bt.nudge.prob
 
 # Cases -------------------------------------------------------------------
 
@@ -31,20 +78,19 @@ case_targets <- c(8373, 3165, 1590, 1301, 784, 382, 1439, 7256, 6079,
                   1981, 958, 6259, 19544, 3194, 1278, 701, 1749, 2988,
                   4000, 3504)
 
-for (i in 1:100){
+for (i in 1:128){
   cases <- baseline_sims[["epi"]][["se.flow"]][, i]
-  cases[1] <- 0
   cases <- data.frame(ts = 1:length(cases), cases = cases)
   cases$cumCases <- cumsum(cases$cases)
   
   cases <- merge(times, cases, by.x = "DayNum", by.y = "ts")
   cases$cases <- cases$cumCases - lag(cases$cumCases)
-  cases <- cases[7:26, c(2, 3)]
+  cases$cases[1] <- cases$cumCases[1]
   cases <- cases %>% rowid_to_column("ROW")
   assign(paste0("cases_", i), cases)
 }
 
-names <- paste0("cases_", 1:100)
+names <- paste0("cases_", 1:128)
 cases_all_runs <- bind_rows(mget(names))
 cases_all_runs <- cases_all_runs %>% group_by(ROW) %>% 
   summarise(Month = min(Month), minResult = min(cases), meanResult = mean(cases), maxResult = max(cases))
@@ -61,7 +107,7 @@ f1 <- ggplot(data = cases_all_runs, aes(x = ROW, y = minResult)) +
                      labels = c("1" = "Jan 21", "4" = "Apr 21", "7" = "Jul 21", 
                                 "10" = "Oct 21", "13" = "Jan 22", "16" = "Apr 22",
                                 "19" = "Jul 22")) +
-  scale_y_continuous(expand = c(0, 0), lim = c(0, 25000)) + 
+  scale_y_continuous(expand = c(0, 0), lim = c(0, 26500)) + 
   xlab("Month") +
   ylab("Incident Infections") +
   scale_color_manual(values = colors1, name = "") +
@@ -73,20 +119,19 @@ f1 <- ggplot(data = cases_all_runs, aes(x = ROW, y = minResult)) +
 hosp_targets <- c(113, 47, 27, 24, 16, 9, 27, 98, 66, 24, 12, 44, 88, 31, 9, 5,
                   9, 19, 29, 26)
 
-for (i in 1:100){
+for (i in 1:128){
   hosp <- baseline_sims[["epi"]][["ich.flow"]][, i]
-  hosp[1] <- 0
   hosp <- data.frame(ts = 1:length(hosp), hosp = hosp)
   hosp$cumHosp <- cumsum(hosp$hosp)
   
   hosp <- merge(times, hosp, by.x = "DayNum", by.y = "ts")
   hosp$hosp <- hosp$cumHosp - lag(hosp$cumHosp)
-  hosp <- hosp[7:26, c(2, 3)]
+  hosp$hosp[1] <- hosp$cumHosp[1]
   hosp <- hosp %>% rowid_to_column("ROW")
   assign(paste0("hosp_", i), hosp)
 }
 
-names <- paste0("hosp_", 1:100)
+names <- paste0("hosp_", 1:128)
 hosp_all_runs <- bind_rows(mget(names))
 hosp_all_runs <- hosp_all_runs %>% group_by(ROW) %>% 
   summarise(Month = min(Month), minResult = min(hosp), meanResult = mean(hosp), maxResult = max(hosp))
@@ -103,7 +148,7 @@ f2 <- ggplot(data = hosp_all_runs, aes(x = ROW, y = minResult)) +
                      labels = c("1" = "Jan 21", "4" = "Apr 21", "7" = "Jul 21", 
                                 "10" = "Oct 21", "13" = "Jan 22", "16" = "Apr 22",
                                 "19" = "Jul 22")) +
-  scale_y_continuous(expand = c(0, 0), lim = c(0, 250)) + 
+  scale_y_continuous(expand = c(0, 0), lim = c(0, 150)) + 
   xlab("Month") +
   ylab("Incident Hospitalizations") +
   scale_color_manual(values = colors1, name = "") +
@@ -114,20 +159,19 @@ f2 <- ggplot(data = hosp_all_runs, aes(x = ROW, y = minResult)) +
 death_targets <- c(25, 23, 14, 9, 5, 4, 2, 9, 26, 22, 8, 7, 11, 20, 13, 5, 2,
                    2, 3, 5 )
 
-for (i in 1:100){
+for (i in 1:128){
   death <- baseline_sims[["epi"]][["d.h.flow"]][, i]
-  death[1] <- 0
   death <- data.frame(ts = 1:length(death), death = death)
   death$cumDeath <- cumsum(death$death)
   
   death <- merge(times, death, by.x = "DayNum", by.y = "ts")
   death$death <- death$cumDeath - lag(death$cumDeath)
-  death <- death[7:26, c(2, 3)]
+  death$death[1] <- death$cumDeath[1] 
   death <- death %>% rowid_to_column("ROW")
   assign(paste0("death_", i), death)
 }
 
-names <- paste0("death_", 1:100)
+names <- paste0("death_", 1:128)
 death_all_runs <- bind_rows(mget(names))
 death_all_runs <- death_all_runs %>% group_by(ROW) %>% 
   summarise(Month = min(Month), minResult = min(death), meanResult = mean(death), maxResult = max(death))
@@ -144,7 +188,7 @@ f3 <- ggplot(data = death_all_runs, aes(x = ROW, y = minResult)) +
                      labels = c("1" = "Jan 21", "4" = "Apr 21", "7" = "Jul 21", 
                                 "10" = "Oct 21", "13" = "Jan 22", "16" = "Apr 22",
                                 "19" = "Jul 22")) +
-  scale_y_continuous(expand = c(0, 0), lim = c(0, 60)) + 
+  scale_y_continuous(expand = c(0, 0), lim = c(0, 55)) + 
   xlab("Month") +
   ylab("Incident Deaths") +
   scale_color_manual(values = colors1, name = "") +
@@ -156,7 +200,7 @@ ggsave("Figure4.tiff", dpi=300, compression = 'lzw')
 
 
 # Vaccine Coverage --------------------------------------------------------
-for (i in 1:100) {
+for (i in 1:128) {
   vax_cov <- data.frame(cov.vax1.0to4 = baseline_sims[["epi"]][["cov_vax1_0to4"]][, i],
                         cov.vax1.5to17 = baseline_sims[["epi"]][["cov_vax1_5to17"]][, i],
                         cov.vax1.18to64 = baseline_sims[["epi"]][["cov_vax1_18to64"]][, i],
@@ -180,12 +224,11 @@ for (i in 1:100) {
   vax_cov <- as.data.frame(sapply(vax_cov, function(x) round(x, 3)*100))
   vax_cov$ts <- 1:nrow(vax_cov)
   vax_cov <- merge(times, vax_cov, by.x = "DayNum", by.y = "ts")
-  vax_cov <- vax_cov[7:26, ]
   vax_cov <- vax_cov %>% rowid_to_column("ROW")
   assign(paste0("vax_cov_summary_", i), vax_cov)
 }
 
-names <- paste0("vax_cov_summary_", 1:100)
+names <- paste0("vax_cov_summary_", 1:128)
 vax_all_runs <- bind_rows(mget(names))
 
 vax_all_runs <- vax_all_runs %>% group_by(ROW) %>% 
@@ -414,3 +457,4 @@ v5 <- ggplot(data = vax_all_runs_5, aes(x = ROW, y = mean.vax1.65p)) +
 combined <- v1 + v2 + v3 + v4 + v5
 combined + plot_layout(ncol = 3)
 ggsave("Figure5.tiff", dpi=300, compression = 'lzw')
+rm(list=setdiff(ls(), c("est", "vax_targets", "mr_vec", "baseline_sims", "merge_simfiles")))

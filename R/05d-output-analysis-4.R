@@ -26,8 +26,7 @@ createPlotData <- function(sim)
   vax4$median = apply(vax4, 1, median, na.rm = TRUE)
   vax4$cMedian = cumsum(vax4$median)
   
-  plot_data <- data.frame(Day = 1:608, Cases = cases$median, cVax1 = vax1$cMedian,
-                          cVax2 = vax2$cMedian, cVax3 = vax3$cMedian, cVax4 = vax4$cMedian)
+  plot_data <- data.frame(Day = 1:608, Cases = cases$median, cVax1 = vax1$cMedian, cVax2 = vax2$cMedian, cVax3 = vax3$cMedian, cVax4 = vax4$cMedian)
   
   return(plot_data)
 }
@@ -36,33 +35,28 @@ colors <- c("Dose 1" = "dodgerblue4", "Dose 2" = "darkgreen", "Dose 3" = "darkre
 
 # Baseline ----------------------------------------------------------------
 
-plot_data1 <- createPlotData(baseline)
+plot_data1 <- createPlotData(baseline_sims)
 
 # No targeting ------------------------------------------------------------
 
 # hosp.nudge.prob doubled, bt.nudge.prob at baseline
-sim.1010 <- merge_simfiles(1010, indir = "data/output/no-targeting-sims", vars = NULL, 
-                           truncate.at = 181, verbose = TRUE)
+sim.1010 <- merge_simfiles(1010, indir = "data/output/no-targeting-sims", vars = NULL, truncate.at = 181, verbose = TRUE)
 plot_data2 <- createPlotData(sim.1010)
 
 # hosp.nudge prob at baseline, bt.nudge.prob halved
-sim.1055 <- merge_simfiles(1055, indir = "data/output/no-targeting-sims", vars = NULL, 
-                           truncate.at = 181, verbose = TRUE)
+sim.1055 <- merge_simfiles(1055, indir = "data/output/no-targeting-sims", vars = NULL, truncate.at = 181, verbose = TRUE)
 plot_data3 <- createPlotData(sim.1055)
 
 # hosp.nudge prob at baseline, bt.nudge.prob at 0
-sim.1110 <- merge_simfiles(1110, indir = "data/output/no-targeting-sims", vars = NULL,  
-                           truncate.at = 181, verbose = TRUE)
+sim.1110 <- merge_simfiles(1110, indir = "data/output/no-targeting-sims", vars = NULL, truncate.at = 181, verbose = TRUE)
 plot_data4 <- createPlotData(sim.1110)
 
 # hosp.nudge.prob doubled, bt.nudge.prob halved
-sim.1065 <- merge_simfiles(1065, indir = "data/output/no-targeting-sims", vars = NULL,  
-                           truncate.at = 181, verbose = TRUE)
+sim.1065 <- merge_simfiles(1065, indir = "data/output/no-targeting-sims", vars = NULL, truncate.at = 181, verbose = TRUE)
 plot_data5 <- createPlotData(sim.1065)
 
 # sim.1120.X.rds - hosp.nudge.prob doubled, bt.nudge.prob at at 0
-sim.1120 <- merge_simfiles(1120, indir = "data/output/no-targeting-sims", vars = NULL,  
-                           truncate.at = 181, verbose = TRUE)
+sim.1120 <- merge_simfiles(1120, indir = "data/output/no-targeting-sims", vars = NULL, truncate.at = 181, verbose = TRUE)
 plot_data6 <- createPlotData(sim.1120)
 
 
@@ -83,7 +77,7 @@ g1 <- ggplot(data = plot_data1, aes(x = Day, y = Cases)) +
                      breaks = c(1, 182, 366, 547),
                      labels = c("1" = "01 Jan 21", "182" = "01 Jul 21", 
                                 "366" = "01 Jan 22", "547" = "01 Jul 22")) +
-  ggtitle("Baseline") + theme_classic()
+  ggtitle("Reference") + theme_classic()
 
 g2 <- ggplot(data = plot_data2, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity") + 
@@ -100,7 +94,7 @@ g2 <- ggplot(data = plot_data2, aes(x = Day, y = Cases)) +
                      breaks = c(1, 182, 366, 547),
                      labels = c("1" = "01 Jan 21", "182" = "01 Jul 21", 
                                 "366" = "01 Jan 22", "547" = "01 Jul 22")) +
-  ggtitle("HNP Doubled, BNP at Baseline") + theme_classic()
+  ggtitle("HNP Doubled, BNP at Reference") + theme_classic()
 
 g3 <- ggplot(data = plot_data3, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity") + 
@@ -117,7 +111,7 @@ g3 <- ggplot(data = plot_data3, aes(x = Day, y = Cases)) +
                      breaks = c(1, 182, 366, 547),
                      labels = c("1" = "01 Jan 21", "182" = "01 Jul 21", 
                                 "366" = "01 Jan 22", "547" = "01 Jul 22")) +
-  ggtitle("HNP at Baseline, BNP Halved") + theme_classic()
+  ggtitle("HNP at Reference, BNP Halved") + theme_classic()
 
 g4 <- ggplot(data = plot_data4, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity") + 
@@ -134,7 +128,7 @@ g4 <- ggplot(data = plot_data4, aes(x = Day, y = Cases)) +
                      breaks = c(1, 182, 366, 547),
                      labels = c("1" = "01 Jan 21", "182" = "01 Jul 21", 
                                 "366" = "01 Jan 22", "547" = "01 Jul 22")) +
-  ggtitle("HNP at Baseline, BNP at 0") + theme_classic()
+  ggtitle("HNP at Reference, BNP at 0") + theme_classic()
 
 g5 <- ggplot(data = plot_data5, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity") + 
@@ -186,11 +180,11 @@ plot_data2$cVax4_diff <- plot_data2$cVax4 - plot_data1$cVax4
 p2 <- ggplot(data = plot_data2, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity") + 
   scale_y_continuous("Incident Infections", expand = c(0, 0),
-                     sec.axis = sec_axis(~ . * 1.5, name = "Cumulative Addtl. Doses")) + 
-  geom_line(aes(y = cVax1_diff / 1.5, color = "Dose 1")) + 
-  geom_line(aes(y = cVax2_diff / 1.5, color = "Dose 2")) + 
-  geom_line(aes(y = cVax3_diff / 1.5, color = "Dose 3")) + 
-  geom_line(aes(y = cVax4_diff / 1.5, color = "Dose 4")) + 
+                     sec.axis = sec_axis(~ . * 4, name = "Cumulative Addtl. Doses")) + 
+  geom_line(aes(y = cVax1_diff / 4, color = "Dose 1")) + 
+  geom_line(aes(y = cVax2_diff / 4, color = "Dose 2")) + 
+  geom_line(aes(y = cVax3_diff / 4, color = "Dose 3")) + 
+  geom_line(aes(y = cVax4_diff / 4, color = "Dose 4")) + 
   scale_color_manual(values = colors, name = "") + 
   xlab("Date") +
   scale_x_continuous(expand = c(0,0),
@@ -198,8 +192,8 @@ p2 <- ggplot(data = plot_data2, aes(x = Day, y = Cases)) +
                      breaks = c(1, 182, 366, 547),
                      labels = c("1" = "01 Jan 21", "182" = "01 Jul 21", 
                                 "366" = "01 Jan 22", "547" = "01 Jul 22")) +
-  coord_cartesian(ylim=c(0, 850)) + 
-  ggtitle("HNP Doubled, BNP at Baseline - For All Adults") + theme_classic()
+  coord_cartesian(ylim=c(0, 900)) + 
+  ggtitle("HNP Doubled, BNP at Reference - For All Adults") + theme_classic()
 
 # Scenario 3
 plot_data3$cVax1_diff <- plot_data3$cVax1 - plot_data1$cVax1
@@ -210,11 +204,11 @@ plot_data3$cVax4_diff <- plot_data3$cVax4 - plot_data1$cVax4
 p3 <- ggplot(data = plot_data3, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity") + 
   scale_y_continuous("Incident Infections", expand = c(0, 0),
-                     sec.axis = sec_axis(~ . * 1.5, name = "Cumulative Addtl. Doses")) + 
-  geom_line(aes(y = cVax1_diff / 1.5, color = "Dose 1")) + 
-  geom_line(aes(y = cVax2_diff / 1.5, color = "Dose 2")) + 
-  geom_line(aes(y = cVax3_diff / 1.5, color = "Dose 3")) + 
-  geom_line(aes(y = cVax4_diff / 1.5, color = "Dose 4")) + 
+                     sec.axis = sec_axis(~ . * 0.1, name = "Cumulative Addtl. Doses")) + 
+  geom_line(aes(y = cVax1_diff / 0.1, color = "Dose 1")) + 
+  geom_line(aes(y = cVax2_diff / 0.1, color = "Dose 2")) + 
+  geom_line(aes(y = cVax3_diff / 0.1, color = "Dose 3")) + 
+  geom_line(aes(y = cVax4_diff / 0.1, color = "Dose 4")) + 
   scale_color_manual(values = colors, name = "") + 
   xlab("Date") +
   scale_x_continuous(expand = c(0,0),
@@ -222,8 +216,8 @@ p3 <- ggplot(data = plot_data3, aes(x = Day, y = Cases)) +
                      breaks = c(1, 182, 366, 547),
                      labels = c("1" = "01 Jan 21", "182" = "01 Jul 21", 
                                 "366" = "01 Jan 22", "547" = "01 Jul 22")) +
-  coord_cartesian(ylim=c(0, 850)) + 
-  ggtitle("HNP at Baseline, BNP Halved - For All Adults") + theme_classic()
+  coord_cartesian(ylim=c(0, 900)) + 
+  ggtitle("HNP at Reference, BNP Halved - For All Adults") + theme_classic()
 
 # Scenario 4
 plot_data4$cVax1_diff <- plot_data4$cVax1 - plot_data1$cVax1
@@ -234,11 +228,11 @@ plot_data4$cVax4_diff <- plot_data4$cVax4 - plot_data1$cVax4
 p4 <- ggplot(data = plot_data4, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity") + 
   scale_y_continuous("Incident Infections", expand = c(0, 0),
-                     sec.axis = sec_axis(~ . * 1.5, name = "Cumulative Addtl. Doses")) + 
-  geom_line(aes(y = cVax1_diff / 1.5, color = "Dose 1")) + 
-  geom_line(aes(y = cVax2_diff / 1.5, color = "Dose 2")) + 
-  geom_line(aes(y = cVax3_diff / 1.5, color = "Dose 3")) + 
-  geom_line(aes(y = cVax4_diff / 1.5, color = "Dose 4")) + 
+                     sec.axis = sec_axis(~ . * 0.1, name = "Cumulative Addtl. Doses")) + 
+  geom_line(aes(y = cVax1_diff / 0.1, color = "Dose 1")) + 
+  geom_line(aes(y = cVax2_diff / 0.1, color = "Dose 2")) + 
+  geom_line(aes(y = cVax3_diff / 0.1, color = "Dose 3")) + 
+  geom_line(aes(y = cVax4_diff / 0.1, color = "Dose 4")) + 
   scale_color_manual(values = colors, name = "") + 
   xlab("Date") +
   scale_x_continuous(expand = c(0,0),
@@ -246,8 +240,8 @@ p4 <- ggplot(data = plot_data4, aes(x = Day, y = Cases)) +
                      breaks = c(1, 182, 366, 547),
                      labels = c("1" = "01 Jan 21", "182" = "01 Jul 21", 
                                 "366" = "01 Jan 22", "547" = "01 Jul 22")) +
-  coord_cartesian(ylim=c(0, 850)) + 
-  ggtitle("HNP at Baseline, BNP at 0 - For All Adults") + theme_classic()
+  coord_cartesian(ylim=c(0, 900)) + 
+  ggtitle("HNP at Reference, BNP at 0 - For All Adults") + theme_classic()
 
 # Scenario 5
 plot_data5$cVax1_diff <- plot_data5$cVax1 - plot_data1$cVax1
@@ -258,11 +252,11 @@ plot_data5$cVax4_diff <- plot_data5$cVax4 - plot_data1$cVax4
 p5 <- ggplot(data = plot_data5, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity") + 
   scale_y_continuous("Incident Infections", expand = c(0, 0),
-                     sec.axis = sec_axis(~ . * 1.5, name = "Cumulative Addtl. Doses")) + 
-  geom_line(aes(y = cVax1_diff / 1.5, color = "Dose 1")) + 
-  geom_line(aes(y = cVax2_diff / 1.5, color = "Dose 2")) + 
-  geom_line(aes(y = cVax3_diff / 1.5, color = "Dose 3")) + 
-  geom_line(aes(y = cVax4_diff / 1.5, color = "Dose 4")) + 
+                     sec.axis = sec_axis(~ . * 4, name = "Cumulative Addtl. Doses")) + 
+  geom_line(aes(y = cVax1_diff / 4, color = "Dose 1")) + 
+  geom_line(aes(y = cVax2_diff / 4, color = "Dose 2")) + 
+  geom_line(aes(y = cVax3_diff / 4, color = "Dose 3")) + 
+  geom_line(aes(y = cVax4_diff / 4, color = "Dose 4")) + 
   scale_color_manual(values = colors, name = "") + 
   xlab("Date") +
   scale_x_continuous(expand = c(0,0),
@@ -270,7 +264,7 @@ p5 <- ggplot(data = plot_data5, aes(x = Day, y = Cases)) +
                      breaks = c(1, 182, 366, 547),
                      labels = c("1" = "01 Jan 21", "182" = "01 Jul 21", 
                                 "366" = "01 Jan 22", "547" = "01 Jul 22")) +
-  coord_cartesian(ylim=c(0, 850)) + 
+  coord_cartesian(ylim=c(0, 900)) + 
   ggtitle("HNP Doubled, BNP Halved - For All Adults") + theme_classic()
 
 # Scenario 6
@@ -282,11 +276,11 @@ plot_data6$cVax4_diff <- plot_data6$cVax4 - plot_data1$cVax4
 p6 <- ggplot(data = plot_data6, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity") + 
   scale_y_continuous("Incident Infections", expand = c(0, 0),
-                     sec.axis = sec_axis(~ . * 1.5, name = "Cumulative Addtl. Doses")) + 
-  geom_line(aes(y = cVax1_diff / 1.5, color = "Dose 1")) + 
-  geom_line(aes(y = cVax2_diff / 1.5, color = "Dose 2")) + 
-  geom_line(aes(y = cVax3_diff / 1.5, color = "Dose 3")) + 
-  geom_line(aes(y = cVax4_diff / 1.5, color = "Dose 4")) + 
+                     sec.axis = sec_axis(~ . * 4, name = "Cumulative Addtl. Doses")) + 
+  geom_line(aes(y = cVax1_diff / 4, color = "Dose 1")) + 
+  geom_line(aes(y = cVax2_diff / 4, color = "Dose 2")) + 
+  geom_line(aes(y = cVax3_diff / 4, color = "Dose 3")) + 
+  geom_line(aes(y = cVax4_diff / 4, color = "Dose 4")) + 
   scale_color_manual(values = colors, name = "") + 
   xlab("Date") +
   scale_x_continuous(expand = c(0,0),
@@ -294,9 +288,9 @@ p6 <- ggplot(data = plot_data6, aes(x = Day, y = Cases)) +
                      breaks = c(1, 182, 366, 547),
                      labels = c("1" = "01 Jan 21", "182" = "01 Jul 21", 
                                 "366" = "01 Jan 22", "547" = "01 Jul 22")) +
-  coord_cartesian(ylim=c(0, 850)) + 
+  coord_cartesian(ylim=c(0, 900)) + 
   ggtitle("HNP Doubled, BNP at 0 - For All Adults") + theme_classic()
 
 combined <- p2 + p3 + p4 + p5 + p6 & theme(legend.position = "bottom")
 combined + plot_layout(guides = "collect", nrow = 3)
-ggsave("Figure9-Option1.tiff", width = 12, height = 12, units = "in", dpi=300, compression = 'lzw')
+ggsave("Figure9.tiff", width = 12, height = 12, units = "in", dpi=300, compression = 'lzw')

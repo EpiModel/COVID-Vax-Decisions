@@ -1,55 +1,6 @@
 
 # Setup -------------------------------------------------------------------
 
-library("EpiModel")
-
-merge_simfiles <- function(simno, indir = "data/", vars = NULL,  truncate.at = NULL, verbose = TRUE) {
-  
-  fn <- list.files(indir, pattern = paste0("sim.*", simno, ".[0-9].rds"), full.names = TRUE)
-  
-  if (length(fn) == 0) {
-    stop("No files of that simno in the specified indir", call. = FALSE)
-  }
-  
-  for (i in seq_along(fn)) {
-    sim <- readRDS(fn[i])
-    
-    if (!is.null(truncate.at)) {
-      sim <- truncate_sim(sim, truncate.at)
-    }
-    
-    sim$network <- NULL
-    sim$attr <- NULL
-    sim$temp <- NULL
-    sim$el <- NULL
-    sim$p <- NULL
-    
-    if (inherits(sim, "list") && all(c("epi", "param", "control") %in% names(sim))) {
-      class(sim) <- "netsim"
-    }
-    
-    if (!is.null(vars)) {
-      sim$epi <- sim$epi[vars]
-      sim$stats <- NULL
-      if (!is.null(sim$riskh)) {
-        sim$riskh <- NULL
-      }
-    }
-    
-    if (i == 1) {
-      out <- sim
-    } else {
-      out <- merge(out, sim, param.error = FALSE, keep.other = FALSE)
-    }
-    
-    if (verbose == TRUE) {
-      cat("File ", i, "/", length(fn), " Loaded ... \n", sep = "")
-    }
-  }
-  
-  return(out)
-}
-
 table2 <- data.frame(scenario = c("Baseline", "No Targeting 1", "No Targeting 2", "No Targeting 3", 
                                   "No Targeting 4", "No Targeting 5", "Old Targeting 1", "Old Targeting 2", 
                                   "Old Targeting 3", "Old Targeting 4", "Old Targeting 5", "Young Targeting 1", 
@@ -103,61 +54,63 @@ table2_fill <- function(sim, rownum, table2) {
   return(table2)
 }
 
-table4_fill <- function(sim, rownum, table4, ref_deaths = NA, ref_doses = NA){
-  deaths <- sim$epi$d.h.flow
-  cDeaths <- quantile(colSums(deaths), probs = c(.25, 0.5, .75))
-  cDeaths_scaled <- round(cDeaths / 1.67, 1)
-  table4[rownum, 2] <- paste0(cDeaths_scaled[2], " (", cDeaths_scaled[1], ", ", cDeaths_scaled[3], ")")
+table4_fill <- function(sim, rownum, table4, ref_death_rate = NA, ref_death_count = NA, ref_doses = NA){
+  deaths <- colSums(sim$epi$d.h.flow)
+  pds <- colSums(sim$epi$num)
+  death_rates <- deaths / pds * 100000
+  death_stats <- quantile(death_rates, probs = c(.25, 0.5, .75))
+  table4[rownum, 2] <- paste0(round(death_stats[2], 3), " (", round(death_stats[1], 3), ", ", round(death_stats[3], 3), ")")
   
-  if (!is.na(ref_deaths)){
-    deaths_averted_scaled.1 <- round(ref_deaths / 1.67 - cDeaths_scaled[1], 1)
-    deaths_averted_scaled.2 <- round(ref_deaths / 1.67 - cDeaths_scaled[2], 1)
-    deaths_averted_scaled.3 <- round(ref_deaths / 1.67 - cDeaths_scaled[3], 1)
+  if (!is.na(ref_death_rate)){
+    deaths_averted.1 <- round(ref_death_rate - death_stats[1], 3)
+    deaths_averted.2 <- round(ref_death_rate - death_stats[2], 3)
+    deaths_averted.3 <- round(ref_death_rate - death_stats[3], 3)
     
-    table4[rownum, 3] <- paste0(deaths_averted_scaled.2, " (", deaths_averted_scaled.3, ", ", deaths_averted_scaled.1, ")")
+    table4[rownum, 3] <- paste0(deaths_averted.2, " (", deaths_averted.3, ", ", deaths_averted.1, ")")
     
-    pct_averted.1 <- round((ref_deaths - cDeaths[1]) / ref_deaths, 3) * 100
-    pct_averted.2 <- round((ref_deaths - cDeaths[2]) / ref_deaths, 3) * 100
-    pct_averted.3 <- round((ref_deaths - cDeaths[3]) / ref_deaths, 3) * 100
+    pct_averted.1 <- round((ref_death_rate - death_stats[1]) / ref_death_rate, 3) * 100
+    pct_averted.2 <- round((ref_death_rate - death_stats[2]) / ref_death_rate, 3) * 100
+    pct_averted.3 <- round((ref_death_rate - death_stats[3]) / ref_death_rate, 3) * 100
     
     table4[rownum, 4] <- paste0(pct_averted.2, " (", pct_averted.3, ", ", pct_averted.1, ")")
     
     total_doses <- colSums(sim$epi$nVax1) + colSums(sim$epi$nVax2) + colSums(sim$epi$nVax3) + colSums(sim$epi$nVax4) 
     addtl_doses <- total_doses - ref_doses
     total_deaths <- colSums(sim$epi$d.h.flow)
-    total_deaths_averted <- ref_deaths - total_deaths 
+    total_deaths_averted <- ref_death_count - total_deaths 
     averted_per_dose <- total_deaths_averted / addtl_doses
     
-    averted_per_dose <- round(quantile(averted_per_dose, probs = c(.25, 0.5, .75)), 1)
+    averted_per_dose <- round(quantile(averted_per_dose, probs = c(.25, 0.5, .75)), 3)
     
     table4[rownum, 5] <- paste0(averted_per_dose[2], " (", averted_per_dose[1], ", ", averted_per_dose[3], ")")
   }
   return(table4)
 }
 
-table3_fill <- function(sim, rownum, table3, ref_inf = NA, ref_doses = NA){
-  inc <- sim$epi$se.flow
-  cInc <- quantile(colSums(inc), probs = c(.25, 0.5, .75))
-  cInc_scaled <- round(cInc / 1.67, 1)
-  table3[rownum, 2] <- paste0(cInc_scaled[2], " (", cInc_scaled[1], ", ", cInc_scaled[3], ")")
+table3_fill <- function(sim, rownum, table3, ref_inf_rate = NA, ref_inf_count = NA, ref_doses = NA){
+  inc <- colSums(sim$epi$se.flow)
+  pd <- colSums(sim$epi$num)
+  inc_rate <- inc / pd * 100000
+  inc_stats <- quantile(inc_rate, probs = c(.25, 0.5, .75))
+  table3[rownum, 2] <- paste0(round(inc_stats[2], 1), " (", round(inc_stats[1], 1), ", ", round(inc_stats[3], 1), ")")
   
-  if (!is.na(ref_inf)){
-    inf_averted_scaled.1 <- round(ref_inf / 1.67 - cInc_scaled[1], 1)
-    inf_averted_scaled.2 <- round(ref_inf / 1.67 - cInc_scaled[2], 1)
-    inf_averted_scaled.3 <- round(ref_inf / 1.67 - cInc_scaled[3], 1)
+  if (!is.na(ref_inf_rate)){
+    inf_averted.1 <- round(ref_inf_rate - inc_stats[1], 1)
+    inf_averted.2 <- round(ref_inf_rate - inc_stats[2], 1)
+    inf_averted.3 <- round(ref_inf_rate - inc_stats[3], 1)
     
-    table3[rownum, 3] <- paste0(inf_averted_scaled.2, " (", inf_averted_scaled.3, ", ", inf_averted_scaled.1, ")")
+    table3[rownum, 3] <- paste0(inf_averted.2, " (", inf_averted.3, ", ", inf_averted.1, ")")
     
-    pct_averted.1 <- round((ref_inf - cInc[1]) / ref_inf, 3) * 100
-    pct_averted.2 <- round((ref_inf - cInc[2]) / ref_inf, 3) * 100
-    pct_averted.3 <- round((ref_inf - cInc[3]) / ref_inf, 3) * 100
+    pct_averted.1 <- round((ref_inf_rate - inc_stats[1]) / ref_inf_rate, 3) * 100
+    pct_averted.2 <- round((ref_inf_rate - inc_stats[2]) / ref_inf_rate, 3) * 100
+    pct_averted.3 <- round((ref_inf_rate - inc_stats[3]) / ref_inf_rate, 3) * 100
     
     table3[rownum, 4] <- paste0(pct_averted.2, " (", pct_averted.3, ", ", pct_averted.1, ")")
     
     total_doses <- colSums(sim$epi$nVax1) + colSums(sim$epi$nVax2) + colSums(sim$epi$nVax3) + colSums(sim$epi$nVax4) 
     addtl_doses <- total_doses - ref_doses
     total_inf <- colSums(sim$epi$se.flow)
-    total_inf_averted <- ref_inf - total_inf
+    total_inf_averted <- ref_inf_count - total_inf
     averted_per_dose <- total_inf_averted / addtl_doses
     
     averted_per_dose <- round(quantile(averted_per_dose, probs = c(.25, 0.5, .75)), 1)
@@ -170,21 +123,19 @@ table3_fill <- function(sim, rownum, table3, ref_inf = NA, ref_doses = NA){
 
 # Baseline -------------------------------------------------------------------
 
-baseline <- readRDS("data/output/baseline-sims.rds")
-baseline <- truncate_sim(baseline, 181)
-
 # Vaccine coverage by age group and dose
-table2 <- table2_fill(baseline, 1, table2)
-ref_doses <- median(colSums(baseline$epi$nVax1) + colSums(baseline$epi$nVax2) + 
-                      colSums(baseline$epi$nVax3) + colSums(baseline$epi$nVax4))
+table2 <- table2_fill(baseline_sims, 1, table2)
+ref_doses <- median(colSums(baseline_sims$epi$nVax1) + colSums(baseline_sims$epi$nVax2) + colSums(baseline_sims$epi$nVax3) + colSums(baseline_sims$epi$nVax4))
 
 # Infections
-table3 <- table3_fill(baseline, 1, table3)
-ref_inf <- quantile(colSums(baseline$epi$se.flow), probs = 0.5)
+table3 <- table3_fill(baseline_sims, 1, table3)
+ref_inf_rate <- quantile(colSums(baseline_sims$epi$se.flow) / colSums(baseline_sims$epi$num) * 100000, probs = 0.5)
+ref_inf_count <- quantile(colSums(baseline_sims$epi$se.flow), probs = 0.5)
 
 # Deaths
-table4 <- table4_fill(baseline, 1, table4)
-ref_deaths <- quantile(colSums(baseline$epi$d.h.flow), probs = 0.5)
+table4 <- table4_fill(baseline_sims, 1, table4)
+ref_death_rate <- quantile(colSums(baseline_sims$epi$d.h.flow) / colSums(baseline_sims$epi$num) * 100000, probs = 0.5)
+ref_death_count <- quantile(colSums(baseline_sims$epi$d.h.flow), probs = 0.5)
 
 # No Targeting Scenarios --------------------------------------------------
 
@@ -197,9 +148,9 @@ sim.1010$param$bt.nudge.prob
 # vaccine coverage
 table2 <- table2_fill(sim.1010, 2, table2)
 # cases
-table3 <- table3_fill(sim.1010, 2, table3, ref_inf = ref_inf, ref_doses = ref_doses)
+table3 <- table3_fill(sim.1010, 2, table3, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4 <- table4_fill(sim.1010, 2, table4, ref_deaths = ref_deaths, ref_doses = ref_doses)
+table4 <- table4_fill(sim.1010, 2, table4, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # sim.1055.X.rds - hosp.nudge prob at baseline, bt.nudge.prob halved
 # load and merge files
@@ -210,9 +161,9 @@ sim.1055$param$bt.nudge.prob
 # vaccine coverage
 table2 <- table2_fill(sim.1055, 3, table2)
 # cases
-table3 <- table3_fill(sim.1055, 3, table3, ref_inf = ref_inf, ref_doses = ref_doses)
+table3 <- table3_fill(sim.1055, 3, table3, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4 <- table4_fill(sim.1055, 3, table4, ref_deaths = ref_deaths, ref_doses = ref_doses)
+table4 <- table4_fill(sim.1055, 3, table4, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # sim.1110.X.rds - hosp.nudge prob at baseline, bt.nudge.prob at 0
 # load and merge files
@@ -223,9 +174,9 @@ sim.1110$param$bt.nudge.prob
 # vaccine coverage
 table2 <- table2_fill(sim.1110, 4, table2)
 # cases
-table3 <- table3_fill(sim.1110, 4, table3, ref_inf = ref_inf, ref_doses = ref_doses)
+table3 <- table3_fill(sim.1110, 4, table3, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4 <- table4_fill(sim.1110, 4, table4, ref_deaths = ref_deaths, ref_doses = ref_doses)
+table4 <- table4_fill(sim.1110, 4, table4, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # sim.1065.X.rds - hosp.nudge.prob doubled, bt.nudge.prob halved
 # load and merge files
@@ -236,9 +187,9 @@ sim.1065$param$bt.nudge.prob
 # vaccine coverage
 table2 <- table2_fill(sim.1065, 5, table2)
 # cases
-table3 <- table3_fill(sim.1065, 5, table3, ref_inf = ref_inf, ref_doses = ref_doses)
+table3 <- table3_fill(sim.1065, 5, table3, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4 <- table4_fill(sim.1065, 5, table4, ref_deaths = ref_deaths, ref_doses = ref_doses)
+table4 <- table4_fill(sim.1065, 5, table4, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # sim.1120.X.rds - hosp.nudge.prob doubled, bt.nudge.prob at at 0
 # load and merge files
@@ -249,9 +200,9 @@ sim.1120$param$bt.nudge.prob
 # vaccine coverage
 table2 <- table2_fill(sim.1120, 6, table2)
 # cases
-table3 <- table3_fill(sim.1120, 6, table3, ref_inf = ref_inf, ref_doses = ref_doses)
+table3 <- table3_fill(sim.1120, 6, table3, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4 <- table4_fill(sim.1120, 6, table4, ref_deaths = ref_deaths, ref_doses = ref_doses)
+table4 <- table4_fill(sim.1120, 6, table4, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # Contour Plots -----------------------------------------------------------
 
@@ -268,8 +219,8 @@ for (i in 1001:1120) {
   scale.1 <- temp$param$hosp.nudge.prob[5] / 0.102
   scale.2 <- temp$param$bt.nudge.prob[5] / 0.125
   
-  scenario.cInc <- median(colSums(temp$epi$se.flow)) / 1.67
-  scenario.cDeaths <- median(colSums(temp$epi$d.h.flow)) / 1.67
+  scenario.cInc <- median(colSums(temp$epi$se.flow) / colSums(temp$epi$num) * 100000)
+  scenario.cDeaths <- median(colSums(temp$epi$d.h.flow) / colSums(temp$epi$num) * 100000)
   scenario.cDoses <- median(colSums(temp$epi$nVax1) + colSums(temp$epi$nVax2) + colSums(temp$epi$nVax3) + colSums(temp$epi$nVax4))
   
   cInc[(i - 1000), ] <- c(scale.1, scale.2, scenario.cInc)
@@ -279,14 +230,9 @@ for (i in 1001:1120) {
   remove(temp)
 }
 
-cInc[121, ] <- c(1.0, 1.0, ref_inf / 1.67)
-cInc$tertiles <- cut(cInc$cInc, 3, labels = c(0, 1, 2))
-
-cDeaths[121, ] <- c(1.0, 1.0, ref_deaths / 1.67)
-cDeaths$tertiles <- cut(cDeaths$cDeaths, 3, labels = c(0, 1, 2))
-
+cInc[121, ] <- c(1.0, 1.0, ref_inf_rate)
+cDeaths[121, ] <- c(1.0, 1.0, ref_death_rate)
 cDoses[121, ] <- c(1.0, 1.0, ref_doses)
-cDoses$tertiles <- cut(cDoses$cDoses, 3, labels = c(0, 1, 2))
 
 library("viridis")
 library("ggplot2")
@@ -300,21 +246,8 @@ g_inc_cont <- ggplot(cInc, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY") + 
-  ggtitle("Targeting All Adults (18+)") +
-  coord_fixed()
-
-g_inc_dis <- ggplot(cInc, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
-  geom_raster(aes(fill = tertiles), interpolate = TRUE) +
-  #geom_contour(aes(z = cInc), col = "white", alpha = 0.5, lwd = 0.5) +
-  #geom_text_contour(aes(z = cInc), stroke = 0.1) +
-  theme_minimal() +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PY", 
-                     labels = c("67'100 - 67'400", "67'400 - 67'700", "67'700 - 67'900")) + 
+  labs(x = "HNP (% of Reference)", y = "BNP (% of Reference)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PD") + 
   ggtitle("Targeting All Adults (18+)") +
   coord_fixed()
 
@@ -326,24 +259,10 @@ g_death_cont <- ggplot(cDeaths, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale))
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY") + 
+  labs(x = "HNP (% of Reference)", y = "BNP (% of Reference)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PD") + 
   ggtitle("Targeting All Adults (18+)") +
   coord_fixed()
-
-g_death_dis <- ggplot(cDeaths, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
-  geom_raster(aes(fill = tertiles), interpolate = TRUE) +
-  #geom_contour(aes(z = cDeaths), col = "white", alpha = 0.5, lwd = 0.5) +
-  #geom_text_contour(aes(z = cDeaths), stroke = 0.1) +
-  theme_minimal() +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PY", 
-                     labels = c("116 - 118", "118 - 120", "120 - 122")) + 
-  ggtitle("Targeting All Adults (18+)") +
-  coord_fixed()
-
 
 # Plot doses
 g_dose_cont <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
@@ -353,20 +272,7 @@ g_dose_cont <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Baseline)", y = "BNP (% of Baseline)") +
+  labs(x = "HNP (% of Reference)", y = "BNP (% of Reference)") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Doses") + 
-  ggtitle("Targeting All Adults (18+)") +
-  coord_fixed()
-
-g_dose_dis <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
-  geom_raster(aes(fill = tertiles), interpolate = TRUE) +
-  #geom_contour(aes(z = cDoses), col = "white", alpha = 0.5, lwd = 0.5) +
-  #geom_text_contour(aes(z = cDoses), stroke = 0.1) +
-  theme_minimal() +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP  (% of Baseline)", y = "BNP (% of Baseline)") +
-  scale_fill_viridis(discrete = TRUE, alpha = 1, option = "D", direction = 1, name = "Doses", 
-                     labels = c("149'700 - 150'200", "150'200 - 150'800", "150'800 - 151'300")) + 
   ggtitle("Targeting All Adults (18+)") +
   coord_fixed()
