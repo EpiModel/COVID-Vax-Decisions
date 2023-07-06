@@ -196,7 +196,7 @@ f3 <- ggplot(data = death_all_runs, aes(x = ROW, y = minResult)) +
 
 combined <- f1 + f2 + f3 & theme(legend.position = "bottom")
 combined + plot_layout(ncol = 1, guides = "collect")
-ggsave("Figure4.tiff", dpi=300, compression = 'lzw')
+ggsave("Figure1.tiff", dpi=300, compression = 'lzw', width = 3000, height = 2400, units = "px")
 
 
 # Vaccine Coverage --------------------------------------------------------
@@ -456,5 +456,5 @@ v5 <- ggplot(data = vax_all_runs_5, aes(x = ROW, y = mean.vax1.65p)) +
 
 combined <- v1 + v2 + v3 + v4 + v5
 combined + plot_layout(ncol = 3)
-ggsave("Figure5.tiff", dpi=300, compression = 'lzw')
+ggsave("Figure2.tiff", dpi=300, compression = 'lzw', width = 3000, height = 2400, units = "px")
 rm(list=setdiff(ls(), c("est", "vax_targets", "mr_vec", "baseline_sims", "merge_simfiles")))

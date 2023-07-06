@@ -1,27 +1,21 @@
 
 # Setup -------------------------------------------------------------------
 
-table2 <- data.frame(scenario = c("Baseline", "No Targeting 1", "No Targeting 2", "No Targeting 3", 
-                                  "No Targeting 4", "No Targeting 5", "Old Targeting 1", "Old Targeting 2", 
-                                  "Old Targeting 3", "Old Targeting 4", "Old Targeting 5", "Young Targeting 1", 
-                                  "Young Targeting 2", "Young Targeting 3", "Young Targeting 4", 
-                                  "Young Targeting 5"),
+table2 <- data.frame(scenario = c("Baseline", "BNP - No Targeting 1", "BNP - No Targeting 2", "BNP - No Targeting 3", 
+                                  "BNP - No Targeting 4", "BNP - No Targeting 5", "MNP - No Targeting 1", 
+                                  "MNP - No Targeting 2", "MNP - No Targeting 3", "MNP - No Targeting 4", "MNP - No Targeting 5"),
                      Age1Dose1 = NA, Age1Dose2 = NA, Age1Dose3 = NA, Age1Dose4 = 0,
                      Age2Dose1 = NA, Age2Dose2 = NA, Age2Dose3 = NA, Age2Dose4 = NA,
                      Age3Dose1 = NA, Age3Dose2 = NA, Age3Dose3 = NA, Age3Dose4 = NA)
 
-table3 <- data.frame(scenario = c("Baseline", "No Targeting 1", "No Targeting 2", "No Targeting 3", 
-                                  "No Targeting 4", "No Targeting 5", "Old Targeting 1", "Old Targeting 2", 
-                                  "Old Targeting 3", "Old Targeting 4", "Old Targeting 5", "Young Targeting 1", 
-                                  "Young Targeting 2", "Young Targeting 3", "Young Targeting 4", 
-                                  "Young Targeting 5"),
+table3 <- data.frame(scenario = c("Baseline", "BNP - No Targeting 1", "BNP - No Targeting 2", "BNP - No Targeting 3", 
+                                  "BNP - No Targeting 4", "BNP - No Targeting 5", "MNP - No Targeting 1", 
+                                  "MNP - No Targeting 2", "MNP - No Targeting 3", "MNP - No Targeting 4", "MNP - No Targeting 5"),
                      CInc = NA, IncAverted = NA, PctAverted = NA, AvertedPerDose = NA)
 
-table4 <- data.frame(scenario = c("Baseline", "No Targeting 1", "No Targeting 2", "No Targeting 3", 
-                                  "No Targeting 4", "No Targeting 5", "Old Targeting 1", "Old Targeting 2", 
-                                  "Old Targeting 3", "Old Targeting 4", "Old Targeting 5", "Young Targeting 1", 
-                                  "Young Targeting 2", "Young Targeting 3", "Young Targeting 4", 
-                                  "Young Targeting 5"),
+table4 <- data.frame(scenario = c("Baseline", "BNP - No Targeting 1", "BNP - No Targeting 2", "BNP - No Targeting 3", 
+                                  "BNP - No Targeting 4", "BNP - No Targeting 5", "MNP - No Targeting 1", 
+                                  "MNP - No Targeting 2", "MNP - No Targeting 3", "MNP - No Targeting 4", "MNP - No Targeting 5"),
                      CDeaths = NA, DeathsAverted = NA, PctAverted = NA, AvertedPerDose = NA)
 
 table2_fill <- function(sim, rownum, table2) {
@@ -234,45 +228,204 @@ cInc[121, ] <- c(1.0, 1.0, ref_inf_rate)
 cDeaths[121, ] <- c(1.0, 1.0, ref_death_rate)
 cDoses[121, ] <- c(1.0, 1.0, ref_doses)
 
+# No Targeting Scenarios: Misc. NP varying --------------------------------------------------
+
+# sim.1010.X.rds - hosp.nudge.prob doubled, misc.nudge.prob at baseline
+# load and merge files
+sim.1010.2 <- merge_simfiles(1010, indir = "data/output/no-targeting-sims-2", vars = NULL,  truncate.at = 181, verbose = TRUE)
+# check params
+sim.1010.2$param$hosp.nudge.prob
+sim.1010.2$param$bt.nudge.prob
+sim.1010.2$param$misc.nudge.prob.1
+sim.1010.2$param$misc.nudge.prob.2
+sim.1010.2$param$misc.nudge.prob.3
+# vaccine coverage
+table2 <- table2_fill(sim.1010.2, 7, table2)
+# cases
+table3 <- table3_fill(sim.1010.2, 7, table3, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+# deaths
+table4 <- table4_fill(sim.1010.2, 7, table4, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+
+# sim.1055.X.rds - hosp.nudge prob at baseline, misc.nudge.prob halved
+# load and merge files
+sim.1055.2 <- merge_simfiles(1055, indir = "data/output/no-targeting-sims-2", vars = NULL,  truncate.at = 181, verbose = TRUE)
+# check params
+sim.1055.2$param$hosp.nudge.prob
+sim.1055.2$param$bt.nudge.prob
+sim.1055.2$param$misc.nudge.prob.1
+sim.1055.2$param$misc.nudge.prob.2
+sim.1055.2$param$misc.nudge.prob.3
+# vaccine coverage
+table2 <- table2_fill(sim.1055.2, 8, table2)
+# cases
+table3 <- table3_fill(sim.1055.2, 8, table3, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+# deaths
+table4 <- table4_fill(sim.1055.2, 8, table4, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+
+# sim.1110.X.rds - hosp.nudge prob at baseline, misc.nudge.prob at 0
+# load and merge files
+sim.1110.2 <- merge_simfiles(1110, indir = "data/output/no-targeting-sims-2", vars = NULL,  truncate.at = 181, verbose = TRUE)
+# check params
+sim.1110.2$param$hosp.nudge.prob
+sim.1110.2$param$bt.nudge.prob
+sim.1110.2$param$misc.nudge.prob.1
+sim.1110.2$param$misc.nudge.prob.2
+sim.1110.2$param$misc.nudge.prob.3
+# vaccine coverage
+table2 <- table2_fill(sim.1110.2, 9, table2)
+# cases
+table3 <- table3_fill(sim.1110.2, 9, table3, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+# deaths
+table4 <- table4_fill(sim.1110.2, 9, table4, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+
+# sim.1065.X.rds - hosp.nudge.prob doubled, misc.nudge.prob halved
+# load and merge files
+sim.1065.2 <- merge_simfiles(1065, indir = "data/output/no-targeting-sims-2", vars = NULL,  truncate.at = 181, verbose = TRUE)
+# check params
+sim.1065.2$param$hosp.nudge.prob
+sim.1065.2$param$bt.nudge.prob
+sim.1065.2$param$misc.nudge.prob.1
+sim.1065.2$param$misc.nudge.prob.2
+sim.1065.2$param$misc.nudge.prob.3
+# vaccine coverage
+table2 <- table2_fill(sim.1065.2, 10, table2)
+# cases
+table3 <- table3_fill(sim.1065.2, 10, table3, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+# deaths
+table4 <- table4_fill(sim.1065.2, 10, table4, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+
+# sim.1120.X.rds - hosp.nudge.prob doubled, misc.nudge.prob at at 0
+# load and merge files
+sim.1120.2 <- merge_simfiles(1120, indir = "data/output/no-targeting-sims-2", vars = NULL,  truncate.at = 181, verbose = TRUE)
+# check params
+sim.1120.2$param$hosp.nudge.prob
+sim.1120.2$param$bt.nudge.prob
+sim.1120.2$param$misc.nudge.prob.1
+sim.1120.2$param$misc.nudge.prob.2
+sim.1120.2$param$misc.nudge.prob.3
+# vaccine coverage
+table2 <- table2_fill(sim.1120.2, 11, table2)
+# cases
+table3 <- table3_fill(sim.1120.2, 11, table3, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+# deaths
+table4 <- table4_fill(sim.1120.2, 11, table4, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+
+# Contour Plots: Misc NP Varying -----------------------------------------------------------
+
+cInc.2 <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), misc.nudge.prob.scale = rep(NA, 121), cInc = rep(NA, 121))
+cDeaths.2 <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), misc.nudge.prob.scale = rep(NA, 121), cDeaths = rep(NA, 121))
+cDoses.2 <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), misc.nudge.prob.scale = rep(NA, 121), cDoses = rep(NA, 121))
+
+for (i in 1001:1120) {
+  
+  print(i)
+  temp <- merge_simfiles(i, indir = "data/output/no-targeting-sims-2", vars = NULL,  truncate.at = 181, verbose = TRUE)
+  
+  scale.1 <- temp$param$hosp.nudge.prob[5] / 0.102
+  scale.2 <- temp$param$misc.nudge.prob.1[5] / 0.12
+  
+  scenario.cInc <- median(colSums(temp$epi$se.flow) / colSums(temp$epi$num) * 100000)
+  scenario.cDeaths <- median(colSums(temp$epi$d.h.flow) / colSums(temp$epi$num) * 100000)
+  scenario.cDoses <- median(colSums(temp$epi$nVax1) + colSums(temp$epi$nVax2) + colSums(temp$epi$nVax3) + colSums(temp$epi$nVax4))
+  
+  cInc.2[(i - 1000), ] <- c(scale.1, scale.2, scenario.cInc)
+  cDeaths.2[(i - 1000), ] <- c(scale.1, scale.2, scenario.cDeaths)
+  cDoses.2[(i - 1000), ] <- c(scale.1, scale.2, scenario.cDoses)
+  
+  remove(temp)
+  
+}
+
+cInc.2[121, ] <- c(1.0, 1.0, ref_inf_rate)
+cDeaths.2[121, ] <- c(1.0, 1.0, ref_death_rate)
+cDoses.2[121, ] <- c(1.0, 1.0, ref_doses)
+
 library("viridis")
 library("ggplot2")
 library("metR")
+library("patchwork")
 
 # Plot cases
+minval <- floor(min(min(cInc$cInc), min(cInc.2$cInc, na.rm = TRUE)))
+maxval <- ceiling(max(max(cInc$cInc), max(cInc.2$cInc, na.rm = TRUE)))
 g_inc_cont <- ggplot(cInc, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = cInc), interpolate = TRUE) +
-  #geom_contour(aes(z = cInc), col = "white", alpha = 0.5, lwd = 0.5) +
+  geom_contour(aes(z = cInc), col = "white", alpha = 0.5, lwd = 0.5) +
   #geom_text_contour(aes(z = cInc), stroke = 0.1) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Reference)", y = "BNP (% of Reference)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Inf / 100'000 PD") + 
-  ggtitle("Targeting All Adults (18+)") +
+  labs(x = "HNP (% of Ref.)", y = "BNP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval), guide = "none") + 
+  ggtitle("Infections per 100'000 Person-Days") +
   coord_fixed()
 
+g_inc_cont_2 <- ggplot(cInc.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.scale)) +
+  geom_raster(aes(fill = cInc), interpolate = TRUE) +
+  geom_contour(aes(z = cInc), col = "white", alpha = 0.5, lwd = 0.5) +
+  #geom_text_contour(aes(z = cInc), stroke = 0.1) +
+  theme_minimal() +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  labs(x = "HNP (% of Ref.)", y = "MNP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval)) + 
+  coord_fixed() +
+  theme(legend.position = "right", legend.justification = "left")
+
 # Plot deaths
+minval <- min(min(cDeaths$cDeaths), min(cDeaths.2$cDeaths, na.rm = TRUE))
+maxval <- max(max(cDeaths$cDeaths), max(cDeaths.2$cDeaths, na.rm = TRUE))
 g_death_cont <- ggplot(cDeaths, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = cDeaths), interpolate = TRUE) +
-  #geom_contour(aes(z = cDeaths), col = "white", alpha = 0.5, lwd = 0.5) +
+  geom_contour(aes(z = cDeaths), col = "white", alpha = 0.5, lwd = 0.5) +
   #geom_text_contour(aes(z = cDeaths), stroke = 0.1) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Reference)", y = "BNP (% of Reference)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Deaths / 100'000 PD") + 
-  ggtitle("Targeting All Adults (18+)") +
+  labs(x = "HNP (% of Ref.)", y = "BNP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval), guide = "none") + 
+  ggtitle("Deaths per 100'000 Person-Days") +
   coord_fixed()
 
+g_death_cont_2 <- ggplot(cDeaths.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.scale)) +
+  geom_raster(aes(fill = cDeaths), interpolate = TRUE) +
+  geom_contour(aes(z = cDeaths), col = "white", alpha = 0.5, lwd = 0.5) +
+  #geom_text_contour(aes(z = cDeaths), stroke = 0.1) +
+  theme_minimal() +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  labs(x = "HNP (% of Ref.)", y = "MNP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval)) + 
+  coord_fixed() +
+  theme(legend.position = "right", legend.justification = "left")
+
 # Plot doses
+minval <- min(min(cDoses$cDoses), min(cDoses.2$cDoses, na.rm = TRUE))
+maxval <- max(max(cDoses$cDoses), max(cDoses.2$cDoses, na.rm = TRUE))
 g_dose_cont <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = cDoses), interpolate = TRUE) +
-  #geom_contour(aes(z = cDoses), col = "white", alpha = 0.5, lwd = 0.5) +
+  geom_contour(aes(z = cDoses), col = "white", alpha = 0.5, lwd = 0.5) +
   #geom_text_contour(aes(z = cDoses), stroke = 0.1) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Reference)", y = "BNP (% of Reference)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Doses") + 
-  ggtitle("Targeting All Adults (18+)") +
+  labs(x = "HNP (% of Ref.)", y = "BNP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval), guide = "none") + 
+  ggtitle("Total Vaccine Doses Administered") +
   coord_fixed()
+
+g_dose_cont_2 <- ggplot(cDoses.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.scale)) +
+  geom_raster(aes(fill = cDoses), interpolate = TRUE) +
+  geom_contour(aes(z = cDoses), col = "white", alpha = 0.5, lwd = 0.5) +
+  #geom_text_contour(aes(z = cDoses), stroke = 0.1) +
+  theme_minimal() +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  labs(x = "HNP (% of Ref.)", y = "MNP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval)) + 
+  coord_fixed() +
+  theme(legend.position = "right", legend.justification = "left")
+
+combined1 <- g_dose_cont + g_dose_cont_2 + g_inc_cont + g_inc_cont_2 + g_death_cont + g_death_cont_2 
+combined1 + plot_layout(nrow = 3)
+ggsave("Figure3.tiff", width = 12, height = 12, units = "in", dpi=300, compression = 'lzw')
