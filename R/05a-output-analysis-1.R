@@ -351,14 +351,15 @@ maxval <- ceiling(max(max(cInc$cInc), max(cInc.2$cInc, na.rm = TRUE)))
 g_inc_cont <- ggplot(cInc, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = cInc), interpolate = TRUE) +
   geom_contour(aes(z = cInc), col = "white", alpha = 0.5, lwd = 0.5) +
-  #geom_text_contour(aes(z = cInc), stroke = 0.1) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Ref.)", y = "BNP (% of Ref.)") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval), guide = "none") + 
-  ggtitle("Infections per 100'000 Person-Days") +
-  coord_fixed()
+  theme(axis.text = element_text(size = rel(1.2)),
+        axis.title = element_text(size = rel(1.2)),
+        legend.text = element_text(size = rel(1.2))) + 
+  coord_fixed() 
 
 g_inc_cont_2 <- ggplot(cInc.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.scale)) +
   geom_raster(aes(fill = cInc), interpolate = TRUE) +
@@ -369,8 +370,11 @@ g_inc_cont_2 <- ggplot(cInc.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.scale)
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Ref.)", y = "MNP (% of Ref.)") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval)) + 
+  theme(axis.text = element_text(size = rel(1.2)),
+        axis.title = element_text(size = rel(1.2)),
+        legend.text = element_text(size = rel(1.2))) + 
   coord_fixed() +
-  theme(legend.position = "right", legend.justification = "left")
+  theme(legend.position = "right", legend.justification = "left") 
 
 # Plot deaths
 minval <- min(min(cDeaths$cDeaths), min(cDeaths.2$cDeaths, na.rm = TRUE))
@@ -384,8 +388,10 @@ g_death_cont <- ggplot(cDeaths, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale))
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Ref.)", y = "BNP (% of Ref.)") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval), guide = "none") + 
-  ggtitle("Deaths per 100'000 Person-Days") +
-  coord_fixed()
+  theme(axis.text = element_text(size = rel(1.2)),
+        axis.title = element_text(size = rel(1.2)),
+        legend.text = element_text(size = rel(1.2))) + 
+  coord_fixed() 
 
 g_death_cont_2 <- ggplot(cDeaths.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.scale)) +
   geom_raster(aes(fill = cDeaths), interpolate = TRUE) +
@@ -396,8 +402,11 @@ g_death_cont_2 <- ggplot(cDeaths.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.s
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Ref.)", y = "MNP (% of Ref.)") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval)) + 
+  theme(axis.text = element_text(size = rel(1.2)),
+        axis.title = element_text(size = rel(1.2)),
+        legend.text = element_text(size = rel(1.2))) + 
   coord_fixed() +
-  theme(legend.position = "right", legend.justification = "left")
+  theme(legend.position = "right", legend.justification = "left") 
 
 # Plot doses
 minval <- min(min(cDoses$cDoses), min(cDoses.2$cDoses, na.rm = TRUE))
@@ -411,8 +420,10 @@ g_dose_cont <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Ref.)", y = "BNP (% of Ref.)") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval), guide = "none") + 
-  ggtitle("Total Vaccine Doses Administered") +
-  coord_fixed()
+  theme(axis.text = element_text(size = rel(1.2)),
+        axis.title = element_text(size = rel(1.2)),
+        legend.text = element_text(size = rel(1.2))) + 
+  coord_fixed() 
 
 g_dose_cont_2 <- ggplot(cDoses.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.scale)) +
   geom_raster(aes(fill = cDoses), interpolate = TRUE) +
@@ -423,9 +434,16 @@ g_dose_cont_2 <- ggplot(cDoses.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.sca
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Ref.)", y = "MNP (% of Ref.)") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval)) + 
+   theme(axis.text = element_text(size = rel(1.2)),
+        axis.title = element_text(size = rel(1.2)),
+        legend.text = element_text(size = rel(1.2))) + 
   coord_fixed() +
   theme(legend.position = "right", legend.justification = "left")
 
-combined1 <- g_dose_cont + g_dose_cont_2 + g_inc_cont + g_inc_cont_2 + g_death_cont + g_death_cont_2 
-combined1 + plot_layout(nrow = 3)
+combined1 <- g_dose_cont + g_dose_cont_2 + plot_annotation(tag_levels = list(c("A1", "A2")), title = "Total Vaccine Doses Administered") 
+combined2 <- g_inc_cont + g_inc_cont_2 + plot_annotation(tag_levels = list(c("B1", "B2")), title = "Infections per 100'000 Person-Days") 
+combined3 <- g_death_cont + g_death_cont_2 + plot_annotation(tag_levels = list(c("C1", "C2")), title = "Deaths per 100'000 Person-Days")
+
+wrap_elements(combined1) / wrap_elements(combined2) / wrap_elements(combined3)
+
 ggsave("Figure3.tiff", width = 12, height = 12, units = "in", dpi=300, compression = 'lzw')
