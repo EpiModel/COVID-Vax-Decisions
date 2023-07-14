@@ -260,24 +260,27 @@ maxval <- ceiling(max(max(cInc.old$cInc), max(cInc.old.2$cInc, na.rm = TRUE)))
 g_inc_cont_old <- ggplot(cInc.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = cInc), interpolate = TRUE) +
   geom_contour(aes(z = cInc), col = "white", alpha = 0.5, lwd = 0.5) +
-  #geom_text_contour(aes(z = cInc), stroke = 0.1) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Ref.)", y = "BNP (% of Ref.)") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval), guide = "none") + 
-  ggtitle("Infections per 100'000 Person-Days") +
+  theme(axis.text = element_text(size = rel(1.2)),
+        axis.title = element_text(size = rel(1.2)),
+        legend.text = element_text(size = rel(1.2))) + 
   coord_fixed()
 
 g_inc_cont_old_2 <- ggplot(cInc.old.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.scale)) +
   geom_raster(aes(fill = cInc), interpolate = TRUE) +
   geom_contour(aes(z = cInc), col = "white", alpha = 0.5, lwd = 0.5) +
-  #geom_text_contour(aes(z = cInc), stroke = 0.1) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Ref.)", y = "MNP (% of Ref.)") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval)) + 
+  theme(axis.text = element_text(size = rel(1.2)),
+        axis.title = element_text(size = rel(1.2)),
+        legend.text = element_text(size = rel(1.2))) + 
   coord_fixed() +
   theme(legend.position = "right", legend.justification = "left")
 
@@ -287,24 +290,27 @@ maxval <- max(max(cDeaths.old$cDeaths), max(cDeaths.old.2$cDeaths, na.rm = TRUE)
 g_death_cont_old <- ggplot(cDeaths.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = cDeaths), interpolate = TRUE) +
   geom_contour(aes(z = cDeaths), col = "white", alpha = 0.5, lwd = 0.5) +
-  #geom_text_contour(aes(z = cDeaths), stroke = 0.1) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Ref.)", y = "BNP (% of Ref.)") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval), guide = "none") + 
-  ggtitle("Deaths per 100'000 Person-Days") +
+  theme(axis.text = element_text(size = rel(1.2)),
+        axis.title = element_text(size = rel(1.2)),
+        legend.text = element_text(size = rel(1.2))) + 
   coord_fixed()
 
 g_death_cont_old_2 <- ggplot(cDeaths.old.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.scale)) +
   geom_raster(aes(fill = cDeaths), interpolate = TRUE) +
   geom_contour(aes(z = cDeaths), col = "white", alpha = 0.5, lwd = 0.5) +
-  #geom_text_contour(aes(z = cDeaths), stroke = 0.1) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Ref.)", y = "MNP (% of Ref.)") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval)) + 
+  theme(axis.text = element_text(size = rel(1.2)),
+        axis.title = element_text(size = rel(1.2)),
+        legend.text = element_text(size = rel(1.2))) + 
   coord_fixed() +
   theme(legend.position = "right", legend.justification = "left")
 
@@ -314,27 +320,33 @@ maxval <- max(max(cDoses.old$cDoses), max(cDoses.old.2$cDoses, na.rm = TRUE))
 g_dose_cont_old <- ggplot(cDoses.old, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = cDoses), interpolate = TRUE) +
   geom_contour(aes(z = cDoses), col = "white", alpha = 0.5, lwd = 0.5) +
-  #geom_text_contour(aes(z = cDoses), stroke = 0.1) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Ref.)", y = "BNP (% of Ref.)") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval), guide = "none") + 
-  ggtitle("Total Vaccine Doses Administered") +
+  theme(axis.text = element_text(size = rel(1.2)),
+        axis.title = element_text(size = rel(1.2)),
+        legend.text = element_text(size = rel(1.2))) + 
   coord_fixed()
 
 g_dose_cont_old_2 <- ggplot(cDoses.old.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.scale)) +
   geom_raster(aes(fill = cDoses), interpolate = TRUE) +
   geom_contour(aes(z = cDoses), col = "white", alpha = 0.5, lwd = 0.5) +
-  #geom_text_contour(aes(z = cDoses), stroke = 0.1) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(x = "HNP (% of Ref.)", y = "MNP (% of Ref.)") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval)) + 
+  theme(axis.text = element_text(size = rel(1.2)),
+        axis.title = element_text(size = rel(1.2)),
+        legend.text = element_text(size = rel(1.2))) + 
   coord_fixed() +
   theme(legend.position = "right", legend.justification = "left")
 
-combined2 <- g_dose_cont_old + g_dose_cont_old_2 + g_inc_cont_old + g_inc_cont_old_2 + g_death_cont_old + g_death_cont_old_2 
-combined2 + plot_layout(nrow = 3)
+combined1 <- g_dose_cont_old + g_dose_cont_old_2 + plot_annotation(tag_levels = list(c("A1", "A2")), title = "Total Vaccine Doses Administered") 
+combined2 <- g_inc_cont_old + g_inc_cont_old_2 + plot_annotation(tag_levels = list(c("B1", "B2")), title = "Infections per 100'000 Person-Days") 
+combined3 <- g_death_cont_old + g_death_cont_old_2 + plot_annotation(tag_levels = list(c("C1", "C2")), title = "Deaths per 100'000 Person-Days") 
+
+wrap_elements(combined1) / wrap_elements(combined2) / wrap_elements(combined3)
 ggsave("FigureA1.tiff", width = 12, height = 12, units = "in", dpi=300, compression = 'lzw')
