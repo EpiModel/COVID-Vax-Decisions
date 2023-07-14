@@ -68,9 +68,13 @@
     "EpiModelCOVID": {
       "Package": "EpiModelCOVID",
       "Version": "1.2.0",
-      "Source": "Local",
-      "RemoteType": "local",
-      "RemoteUrl": "/Users/karinawallrafen/Documents/GitHub/EpiModelCOVID_1.2.0.tar.gz",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "EpiModelCOVID",
+      "RemoteUsername": "EpiModel",
+      "RemoteRef": "Vax-Decisions",
+      "RemoteSha": "79e1127add8b39234f705d67c6704db37e81ef3f",
       "Requirements": [
         "EpiModel",
         "R",
@@ -79,7 +83,7 @@
         "networkLite",
         "tergm"
       ],
-      "Hash": "dc44d4021d3fe3ba785d6e5a675926cb"
+      "Hash": "7a2bfb56a21976b2afcc97d60ed8d6a1"
     },
     "Formula": {
       "Package": "Formula",
