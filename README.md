@@ -3,7 +3,7 @@ This repository holds the source code to reproduce the analysis of our model of 
 
 These models are written and executed in the R statistical software language. To run these files, it is necessary to first install our epidemic modeling software, [EpiModel](https://github.com/EpiModel/EpiModel), and our extension package specifically for modeling SARS-CoV-2 transmission dynamics, [EpiModelCOVID](https://github.com/EpiModel/EpiModelCOVID). The branch of the EpiModelCOVID repository associated with this research project is [Vax-Decisions](https://github.com/EpiModel/EpiModelCOVID/tree/Vax-Decisions).
 
-This installation is accomplished with the renv package in R. First install renv (if you do not already have it installed) and run:
+This installation is accomplished with the renv package in R. First install `renv` (if you do not already have it installed) and run:
 
 ```r
 renv::init()
