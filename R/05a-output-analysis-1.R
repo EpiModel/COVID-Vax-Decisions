@@ -125,6 +125,7 @@ ref_doses <- median(colSums(baseline_sims$epi$nVax1) + colSums(baseline_sims$epi
 table3 <- table3_fill(baseline_sims, 1, table3)
 ref_inf_rate <- quantile(colSums(baseline_sims$epi$se.flow) / colSums(baseline_sims$epi$num) * 100000, probs = 0.5)
 ref_inf_count <- quantile(colSums(baseline_sims$epi$se.flow), probs = 0.5)
+ref_case_rate <- quantile(colSums(baseline_sims$epi$ipic.flow) / colSums(baseline_sims$epi$num) * 100000, probs = 0.5)
 
 # Deaths
 table4 <- table4_fill(baseline_sims, 1, table4)
@@ -203,6 +204,7 @@ table4 <- table4_fill(sim.1120, 6, table4, ref_death_rate = ref_death_rate, ref_
 cInc <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), bt.nudge.prob.scale = rep(NA, 121), cInc = rep(NA, 121))
 cDeaths <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), bt.nudge.prob.scale = rep(NA, 121), cDeaths = rep(NA, 121))
 cDoses <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), bt.nudge.prob.scale = rep(NA, 121), cDoses = rep(NA, 121))
+cCases <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), bt.nudge.prob.scale = rep(NA, 121), cCases = rep(NA, 121))
 
 for (i in 1001:1120) {
   
@@ -216,10 +218,12 @@ for (i in 1001:1120) {
   scenario.cInc <- median(colSums(temp$epi$se.flow) / colSums(temp$epi$num) * 100000)
   scenario.cDeaths <- median(colSums(temp$epi$d.h.flow) / colSums(temp$epi$num) * 100000)
   scenario.cDoses <- median(colSums(temp$epi$nVax1) + colSums(temp$epi$nVax2) + colSums(temp$epi$nVax3) + colSums(temp$epi$nVax4))
+  scenario.cCases <- median(colSums(temp$epi$ipic.flow) / colSums(temp$epi$num) * 100000)
   
   cInc[(i - 1000), ] <- c(scale.1, scale.2, scenario.cInc)
   cDeaths[(i - 1000), ] <- c(scale.1, scale.2, scenario.cDeaths)
   cDoses[(i - 1000), ] <- c(scale.1, scale.2, scenario.cDoses)
+  cCases[(i - 1000), ] <- c(scale.1, scale.2, scenario.cCases)
   
   remove(temp)
 }
@@ -227,6 +231,7 @@ for (i in 1001:1120) {
 cInc[121, ] <- c(1.0, 1.0, ref_inf_rate)
 cDeaths[121, ] <- c(1.0, 1.0, ref_death_rate)
 cDoses[121, ] <- c(1.0, 1.0, ref_doses)
+cCases[121, ] <- c(1.0, 1.0, ref_case_rate)
 
 # No Targeting Scenarios: Misc. NP varying --------------------------------------------------
 
@@ -315,6 +320,7 @@ table4 <- table4_fill(sim.1120.2, 11, table4, ref_death_rate = ref_death_rate, r
 cInc.2 <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), misc.nudge.prob.scale = rep(NA, 121), cInc = rep(NA, 121))
 cDeaths.2 <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), misc.nudge.prob.scale = rep(NA, 121), cDeaths = rep(NA, 121))
 cDoses.2 <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), misc.nudge.prob.scale = rep(NA, 121), cDoses = rep(NA, 121))
+cCases.2 <- data.frame(hosp.nudge.prob.scale = rep(NA, 121), misc.nudge.prob.scale = rep(NA, 121), cCases = rep(NA, 121))
 
 for (i in 1001:1120) {
   
@@ -327,10 +333,12 @@ for (i in 1001:1120) {
   scenario.cInc <- median(colSums(temp$epi$se.flow) / colSums(temp$epi$num) * 100000)
   scenario.cDeaths <- median(colSums(temp$epi$d.h.flow) / colSums(temp$epi$num) * 100000)
   scenario.cDoses <- median(colSums(temp$epi$nVax1) + colSums(temp$epi$nVax2) + colSums(temp$epi$nVax3) + colSums(temp$epi$nVax4))
+  scenario.cCases <- median(colSums(temp$epi$ipic.flow) / colSums(temp$epi$num) * 100000)
   
   cInc.2[(i - 1000), ] <- c(scale.1, scale.2, scenario.cInc)
   cDeaths.2[(i - 1000), ] <- c(scale.1, scale.2, scenario.cDeaths)
   cDoses.2[(i - 1000), ] <- c(scale.1, scale.2, scenario.cDoses)
+  cCases.2[(i - 1000), ] <- c(scale.1, scale.2, scenario.cCases)
   
   remove(temp)
   
@@ -339,6 +347,7 @@ for (i in 1001:1120) {
 cInc.2[121, ] <- c(1.0, 1.0, ref_inf_rate)
 cDeaths.2[121, ] <- c(1.0, 1.0, ref_death_rate)
 cDoses.2[121, ] <- c(1.0, 1.0, ref_doses)
+cCases.2[121, ] <- c(1.0, 1.0, ref_case_rate)
 
 library("viridis")
 library("ggplot2")
