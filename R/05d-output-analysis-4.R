@@ -92,11 +92,11 @@ plot_data2$cVax4_diff <- plot_data2$cVax4 - plot_data1$cVax4
 p2 <- ggplot(data = plot_data2, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity", color = "lightblue") + 
   scale_y_continuous("Incidence", expand = c(0, 0),
-                     sec.axis = sec_axis(~ . * 4, name = "Cum. Addtl. Doses")) + 
-  geom_line(aes(y = cVax1_diff / 4, color = "Dose 1")) + 
-  geom_line(aes(y = cVax2_diff / 4, color = "Dose 2")) + 
-  geom_line(aes(y = cVax3_diff / 4, color = "Dose 3")) + 
-  geom_line(aes(y = cVax4_diff / 4, color = "Dose 4")) + 
+                     sec.axis = sec_axis(~ . * 4.5, name = "Cum. Addtl. Doses", labels = c("0", "1'000", "2'000", "3'000", "4'000"))) + 
+  geom_line(aes(y = cVax1_diff / 4.5, color = "Dose 1")) + 
+  geom_line(aes(y = cVax2_diff / 4.5, color = "Dose 2")) + 
+  geom_line(aes(y = cVax3_diff / 4.5, color = "Dose 3")) + 
+  geom_line(aes(y = cVax4_diff / 4.5, color = "Dose 4")) + 
   scale_color_manual(values = colors, name = "") + 
   xlab("Date") +
   scale_x_continuous(expand = c(0,0),
@@ -105,7 +105,7 @@ p2 <- ggplot(data = plot_data2, aes(x = Day, y = Cases)) +
                      labels = c("1" = "Jan 21", "182" = "Jul 21", 
                                 "366" = "Jan 22", "547" = "Jul 22")) +
   coord_cartesian(ylim=c(0, 900)) + 
-  ggtitle("A. HNP Doubled") + theme_classic() + 
+  ggtitle("A: Hosp. NP Doubled") + theme_classic() + 
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2)))
@@ -132,7 +132,7 @@ p3 <- ggplot(data = plot_data3, aes(x = Day, y = Cases)) +
                      labels = c("1" = "Jan 21", "182" = "Jul 21", 
                                 "366" = "Jan 22", "547" = "Jul 22")) +
   coord_cartesian(ylim=c(0, 900)) + 
-  ggtitle("B. BNP Halved") + theme_classic() +
+  ggtitle("B: Breakthrough NP Halved") + theme_classic() +
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2)))
@@ -159,7 +159,7 @@ p4 <- ggplot(data = plot_data4, aes(x = Day, y = Cases)) +
                      labels = c("1" = "Jan 21", "182" = "Jul 21", 
                                 "366" = "Jan 22", "547" = "Jul 22")) +
   coord_cartesian(ylim=c(0, 900)) + 
-  ggtitle("C. BNP at 0") + theme_classic() +
+  ggtitle("C: Breakthrough NP at 0") + theme_classic() +
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2)))
@@ -173,11 +173,11 @@ plot_data5$cVax4_diff <- plot_data5$cVax4 - plot_data1$cVax4
 p5 <- ggplot(data = plot_data5, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity", color = "lightblue") + 
   scale_y_continuous("Incidence", expand = c(0, 0),
-                     sec.axis = sec_axis(~ . * 4, name = "Cum. Addtl. Doses")) + 
-  geom_line(aes(y = cVax1_diff / 4, color = "Dose 1")) + 
-  geom_line(aes(y = cVax2_diff / 4, color = "Dose 2")) + 
-  geom_line(aes(y = cVax3_diff / 4, color = "Dose 3")) + 
-  geom_line(aes(y = cVax4_diff / 4, color = "Dose 4")) + 
+                     sec.axis = sec_axis(~ . * 4.5, name = "Cum. Addtl. Doses", labels = c("0", "1'000", "2'000", "3'000", "4'000"))) + 
+  geom_line(aes(y = cVax1_diff / 4.5, color = "Dose 1")) + 
+  geom_line(aes(y = cVax2_diff / 4.5, color = "Dose 2")) + 
+  geom_line(aes(y = cVax3_diff / 4.5, color = "Dose 3")) + 
+  geom_line(aes(y = cVax4_diff / 4.5, color = "Dose 4")) + 
   scale_color_manual(values = colors, name = "") + 
   xlab("Date") +
   scale_x_continuous(expand = c(0,0),
@@ -186,7 +186,7 @@ p5 <- ggplot(data = plot_data5, aes(x = Day, y = Cases)) +
                      labels = c("1" = "Jan 21", "182" = "Jul 21", 
                                 "366" = "Jan 22", "547" = "Jul 22")) +
   coord_cartesian(ylim=c(0, 900)) + 
-  ggtitle("D. HNP Doubled and BNP Halved") + theme_classic() +
+  ggtitle("D: Hosp. NP Doubled and Breakthrough NP Halved") + theme_classic() +
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2)))
@@ -200,11 +200,11 @@ plot_data6$cVax4_diff <- plot_data6$cVax4 - plot_data1$cVax4
 p6 <- ggplot(data = plot_data6, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity", color = "lightblue") + 
   scale_y_continuous("Incidence", expand = c(0, 0),
-                     sec.axis = sec_axis(~ . * 4, name = "Cum. Addtl. Doses")) + 
-  geom_line(aes(y = cVax1_diff / 4, color = "Dose 1")) + 
-  geom_line(aes(y = cVax2_diff / 4, color = "Dose 2")) + 
-  geom_line(aes(y = cVax3_diff / 4, color = "Dose 3")) + 
-  geom_line(aes(y = cVax4_diff / 4, color = "Dose 4")) + 
+                     sec.axis = sec_axis(~ . * 4.5, name = "Cum. Addtl. Doses", labels = c("0", "1'000", "2'000", "3'000", "4'000"))) + 
+  geom_line(aes(y = cVax1_diff / 4.5, color = "Dose 1")) + 
+  geom_line(aes(y = cVax2_diff / 4.5, color = "Dose 2")) + 
+  geom_line(aes(y = cVax3_diff / 4.5, color = "Dose 3")) + 
+  geom_line(aes(y = cVax4_diff / 4.5, color = "Dose 4")) + 
   scale_color_manual(values = colors, name = "") + 
   xlab("Date") +
   scale_x_continuous(expand = c(0,0),
@@ -213,7 +213,7 @@ p6 <- ggplot(data = plot_data6, aes(x = Day, y = Cases)) +
                      labels = c("1" = "Jan 21", "182" = "Jul 21", 
                                 "366" = "Jan 22", "547" = "Jul 22")) +
   coord_cartesian(ylim=c(0, 900)) + 
-  ggtitle("E. HNP Doubled and BNP at 0") + theme_classic() +
+  ggtitle("E: Hosp. NP Doubled and Breakthrough NP at 0") + theme_classic() +
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2)))
@@ -227,7 +227,7 @@ plot_data8$cVax4_diff <- plot_data8$cVax4 - plot_data1$cVax4
 p8 <- ggplot(data = plot_data8, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity", color = "lightblue") + 
   scale_y_continuous("Incidence", expand = c(0, 0),
-                     sec.axis = sec_axis(~ . * 37, name = "Cum. Addtl. Doses")) + 
+                     sec.axis = sec_axis(~ . * 37, name = "Cum. Addtl. Doses", labels = c("0", "10'000", "20'000", "30'000"))) + 
   geom_line(aes(y = cVax1_diff / 37, color = "Dose 1")) + 
   geom_line(aes(y = cVax2_diff / 37, color = "Dose 2")) + 
   geom_line(aes(y = cVax3_diff / 37, color = "Dose 3")) + 
@@ -240,7 +240,7 @@ p8 <- ggplot(data = plot_data8, aes(x = Day, y = Cases)) +
                      labels = c("1" = "Jan 21", "182" = "Jul 21", 
                                 "366" = "Jan 22", "547" = "Jul 22")) +
   coord_cartesian(ylim=c(0, 900)) + 
-  ggtitle("F. MNP Halved") + theme_classic() +
+  ggtitle("F: Misc. NP Halved") + theme_classic() +
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2)))
@@ -255,7 +255,7 @@ plot_data9$cVax4_diff <- plot_data9$cVax4 - plot_data1$cVax4
 p9 <- ggplot(data = plot_data9, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity", color = "lightblue") + 
   scale_y_continuous("Incidence", expand = c(0, 0),
-                     sec.axis = sec_axis(~ . * 37, name = "Cum. Addtl. Doses")) + 
+                     sec.axis = sec_axis(~ . * 37, name = "Cum. Addtl. Doses", labels = c("0", "10'000", "20'000", "30'000"))) + 
   geom_line(aes(y = cVax1_diff / 37, color = "Dose 1")) + 
   geom_line(aes(y = cVax2_diff / 37, color = "Dose 2")) + 
   geom_line(aes(y = cVax3_diff / 37, color = "Dose 3")) + 
@@ -268,7 +268,7 @@ p9 <- ggplot(data = plot_data9, aes(x = Day, y = Cases)) +
                      labels = c("1" = "Jan 21", "182" = "Jul 21", 
                                 "366" = "Jan 22", "547" = "Jul 22")) +
   coord_cartesian(ylim=c(0, 900)) + 
-  ggtitle("G. MNP at 0") + theme_classic() +
+  ggtitle("G: Misc. NP at 0") + theme_classic() +
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2)))
@@ -283,7 +283,7 @@ plot_data10$cVax4_diff <- plot_data10$cVax4 - plot_data1$cVax4
 p10 <- ggplot(data = plot_data10, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity", color = "lightblue") + 
   scale_y_continuous("Incidence", expand = c(0, 0),
-                     sec.axis = sec_axis(~ . * 37, name = "Cum. Addtl. Doses")) + 
+                     sec.axis = sec_axis(~ . * 37, name = "Cum. Addtl. Doses", labels = c("0", "10'000", "20'000", "30'000"))) + 
   geom_line(aes(y = cVax1_diff / 37, color = "Dose 1")) + 
   geom_line(aes(y = cVax2_diff / 37, color = "Dose 2")) + 
   geom_line(aes(y = cVax3_diff / 37, color = "Dose 3")) + 
@@ -296,7 +296,7 @@ p10 <- ggplot(data = plot_data10, aes(x = Day, y = Cases)) +
                      labels = c("1" = "Jan 21", "182" = "Jul 21", 
                                 "366" = "Jan 22", "547" = "Jul 22")) +
   coord_cartesian(ylim=c(0, 900)) + 
-  ggtitle("H. HNP Doubled and MNP Halved") + theme_classic() +
+  ggtitle("H: Hosp. NP Doubled and Misc. NP Halved") + theme_classic() +
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2)))
@@ -312,7 +312,7 @@ plot_data11$cVax4_diff <- plot_data11$cVax4 - plot_data1$cVax4
 p11 <- ggplot(data = plot_data11, aes(x = Day, y = Cases)) + 
   geom_bar(stat = "identity", color = "lightblue") + 
   scale_y_continuous("Incidence", expand = c(0, 0),
-                     sec.axis = sec_axis(~ . * 37, name = "Cum. Addtl. Doses")) + 
+                     sec.axis = sec_axis(~ . * 37, name = "Cum. Addtl. Doses", labels = c("0", "10'000", "20'000", "30'000"))) + 
   geom_line(aes(y = cVax1_diff / 37, color = "Dose 1")) + 
   geom_line(aes(y = cVax2_diff / 37, color = "Dose 2")) + 
   geom_line(aes(y = cVax3_diff / 37, color = "Dose 3")) + 
@@ -325,7 +325,7 @@ p11 <- ggplot(data = plot_data11, aes(x = Day, y = Cases)) +
                      labels = c("1" = "Jan 21", "182" = "Jul 21", 
                                 "366" = "Jan 22", "547" = "Jul 22")) +
   coord_cartesian(ylim=c(0, 900)) + 
-  ggtitle("I. HNP Doubled and MNP at 0") + theme_classic() +
+  ggtitle("I: Hosp. NP Doubled and Misc. NP at 0") + theme_classic() +
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2)))

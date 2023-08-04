@@ -72,9 +72,9 @@ table4_fill <- function(sim, rownum, table4, ref_death_rate = NA, ref_death_coun
     addtl_doses <- total_doses - ref_doses
     total_deaths <- colSums(sim$epi$d.h.flow)
     total_deaths_averted <- ref_death_count - total_deaths 
-    averted_per_dose <- total_deaths_averted / addtl_doses
+    averted_per_dose <- total_deaths_averted / addtl_doses * 1000
     
-    averted_per_dose <- round(quantile(averted_per_dose, probs = c(.25, 0.5, .75)), 3)
+    averted_per_dose <- round(quantile(averted_per_dose, probs = c(.25, 0.5, .75)), 1)
     
     table4[rownum, 5] <- paste0(averted_per_dose[2], " (", averted_per_dose[1], ", ", averted_per_dose[3], ")")
   }
@@ -105,7 +105,7 @@ table3_fill <- function(sim, rownum, table3, ref_inf_rate = NA, ref_inf_count = 
     addtl_doses <- total_doses - ref_doses
     total_inf <- colSums(sim$epi$se.flow)
     total_inf_averted <- ref_inf_count - total_inf
-    averted_per_dose <- total_inf_averted / addtl_doses
+    averted_per_dose <- total_inf_averted / addtl_doses * 1000
     
     averted_per_dose <- round(quantile(averted_per_dose, probs = c(.25, 0.5, .75)), 1)
     
@@ -346,16 +346,16 @@ library("metR")
 library("patchwork")
 
 # Plot cases
-minval <- floor(min(min(cInc$cInc), min(cInc.2$cInc, na.rm = TRUE)))
-maxval <- ceiling(max(max(cInc$cInc), max(cInc.2$cInc, na.rm = TRUE)))
+minval.i <- floor(min(min(cInc$cInc), min(cInc.2$cInc, na.rm = TRUE)))
+maxval.i <- ceiling(max(max(cInc$cInc), max(cInc.2$cInc, na.rm = TRUE)))
 g_inc_cont <- ggplot(cInc, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = cInc), interpolate = TRUE) +
   geom_contour(aes(z = cInc), col = "white", alpha = 0.5, lwd = 0.5) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Ref.)", y = "BNP (% of Ref.)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval), guide = "none") + 
+  labs(x = "Hosp. NP (% of Ref.)", y = "Breakthrough NP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval.i, maxval.i), guide = "none") + 
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2))) + 
@@ -368,8 +368,8 @@ g_inc_cont_2 <- ggplot(cInc.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.scale)
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Ref.)", y = "MNP (% of Ref.)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval)) + 
+  labs(x = "Hosp. NP (% of Ref.)", y = "Misc. NP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval.i, maxval.i)) + 
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2))) + 
@@ -377,8 +377,8 @@ g_inc_cont_2 <- ggplot(cInc.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.scale)
   theme(legend.position = "right", legend.justification = "left") 
 
 # Plot deaths
-minval <- min(min(cDeaths$cDeaths), min(cDeaths.2$cDeaths, na.rm = TRUE))
-maxval <- max(max(cDeaths$cDeaths), max(cDeaths.2$cDeaths, na.rm = TRUE))
+minval.d <- min(min(cDeaths$cDeaths), min(cDeaths.2$cDeaths, na.rm = TRUE))
+maxval.d <- max(max(cDeaths$cDeaths), max(cDeaths.2$cDeaths, na.rm = TRUE))
 g_death_cont <- ggplot(cDeaths, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = cDeaths), interpolate = TRUE) +
   geom_contour(aes(z = cDeaths), col = "white", alpha = 0.5, lwd = 0.5) +
@@ -386,8 +386,8 @@ g_death_cont <- ggplot(cDeaths, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale))
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Ref.)", y = "BNP (% of Ref.)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval), guide = "none") + 
+  labs(x = "Hosp. NP (% of Ref.)", y = "Breakthrough NP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval.d, maxval.d), guide = "none") + 
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2))) + 
@@ -400,8 +400,8 @@ g_death_cont_2 <- ggplot(cDeaths.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.s
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Ref.)", y = "MNP (% of Ref.)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval)) + 
+  labs(x = "Hosp. NP (% of Ref.)", y = "Misc. NP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval.d, maxval.d)) + 
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2))) + 
@@ -409,8 +409,8 @@ g_death_cont_2 <- ggplot(cDeaths.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.s
   theme(legend.position = "right", legend.justification = "left") 
 
 # Plot doses
-minval <- min(min(cDoses$cDoses), min(cDoses.2$cDoses, na.rm = TRUE))
-maxval <- max(max(cDoses$cDoses), max(cDoses.2$cDoses, na.rm = TRUE))
+minval.v <- min(min(cDoses$cDoses), min(cDoses.2$cDoses, na.rm = TRUE)) - 11
+maxval.v <- max(max(cDoses$cDoses), max(cDoses.2$cDoses, na.rm = TRUE))
 g_dose_cont <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   geom_raster(aes(fill = cDoses), interpolate = TRUE) +
   geom_contour(aes(z = cDoses), col = "white", alpha = 0.5, lwd = 0.5) +
@@ -418,8 +418,8 @@ g_dose_cont <- ggplot(cDoses, aes(hosp.nudge.prob.scale, bt.nudge.prob.scale)) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Ref.)", y = "BNP (% of Ref.)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval), guide = "none") + 
+  labs(x = "Hosp. NP (% of Ref.)", y = "Breakthrough NP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval.v, maxval.v), guide = "none") + 
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2))) + 
@@ -432,8 +432,8 @@ g_dose_cont_2 <- ggplot(cDoses.2, aes(hosp.nudge.prob.scale, misc.nudge.prob.sca
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "HNP (% of Ref.)", y = "MNP (% of Ref.)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval, maxval)) + 
+  labs(x = "Hosp. NP (% of Ref.)", y = "Misc. NP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval.v, maxval.v), labels = c("150'000", "160'000", "170'000", "180'000", "190'000", "200'000")) + 
    theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2))) + 
