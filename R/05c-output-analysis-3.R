@@ -8,11 +8,11 @@ sim.young.1010 <- merge_simfiles(1010, indir = "data/output/young-targeting-sims
 sim.young.1010$param$hosp.nudge.prob
 sim.young.1010$param$bt.nudge.prob
 # vaccine coverage
-table2_supp <- table2_fill(sim.young.1010, 22, table2_supp)
+table2.supp <- table2_fill(sim.young.1010, 22, table2.supp)
 # cases
-table3_supp <- table3_fill(sim.young.1010, 22, table3_supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+table3.supp <- table3_fill(sim.young.1010, 22, table3.supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4_supp <- table4_fill(sim.young.1010, 22, table4_supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+table4.supp <- table4_fill(sim.young.1010, 22, table4.supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # sim.young.target.1055.X.rds - hosp.nudge prob at baseline, bt.nudge.prob halved
 # load and merge files
@@ -21,11 +21,11 @@ sim.young.1055 <- merge_simfiles(1055, indir = "data/output/young-targeting-sims
 sim.young.1055$param$hosp.nudge.prob
 sim.young.1055$param$bt.nudge.prob
 # vaccine coverage
-table2_supp <- table2_fill(sim.young.1055, 23, table2_supp)
+table2.supp <- table2_fill(sim.young.1055, 23, table2.supp)
 # cases
-table3_supp <- table3_fill(sim.young.1055, 23, table3_supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+table3.supp <- table3_fill(sim.young.1055, 23, table3.supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4_supp <- table4_fill(sim.young.1055, 23, table4_supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+table4.supp <- table4_fill(sim.young.1055, 23, table4.supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # sim.young.target.1110.X.rds - hosp.nudge prob at baseline, bt.nudge.prob at 0
 # load and merge files
@@ -34,11 +34,11 @@ sim.young.1110 <- merge_simfiles(1110, indir = "data/output/young-targeting-sims
 sim.young.1110$param$hosp.nudge.prob
 sim.young.1110$param$bt.nudge.prob
 # vaccine coverage
-table2_supp <- table2_fill(sim.young.1110, 24, table2_supp)
+table2.supp <- table2_fill(sim.young.1110, 24, table2.supp)
 # cases
-table3_supp <- table3_fill(sim.young.1110, 24, table3_supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+table3.supp <- table3_fill(sim.young.1110, 24, table3.supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4_supp <- table4_fill(sim.young.1110, 24, table4_supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+table4.supp <- table4_fill(sim.young.1110, 24, table4.supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # sim.young.taget.1065.X.rds - hosp.nudge.prob doubled, bt.nudge.prob halved
 # load and merge files
@@ -47,11 +47,11 @@ sim.young.1065 <- merge_simfiles(1065, indir = "data/output/young-targeting-sims
 sim.young.1065$param$hosp.nudge.prob
 sim.young.1065$param$bt.nudge.prob
 # vaccine coverage
-table2_supp <- table2_fill(sim.young.1065, 25, table2_supp)
+table2.supp <- table2_fill(sim.young.1065, 25, table2.supp)
 # cases
-table3_supp <- table3_fill(sim.young.1065, 25, table3_supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+table3.supp <- table3_fill(sim.young.1065, 25, table3.supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4_supp <- table4_fill(sim.young.1065, 25, table4_supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+table4.supp <- table4_fill(sim.young.1065, 25, table4.supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # sim.young.target.1120.X.rds - hosp.nudge.prob doubled, bt.nudge.prob at 0
 # load and merge files
@@ -60,11 +60,11 @@ sim.young.1120 <- merge_simfiles(1120, indir = "data/output/young-targeting-sims
 sim.young.1120$param$hosp.nudge.prob
 sim.young.1120$param$bt.nudge.prob
 # vaccine coverage
-table2_supp <- table2_fill(sim.young.1120, 26, table2_supp)
+table2.supp <- table2_fill(sim.young.1120, 26, table2.supp)
 # cases
-table3_supp <- table3_fill(sim.young.1120, 26, table3_supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+table3.supp <- table3_fill(sim.young.1120, 26, table3.supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4_supp <- table4_fill(sim.young.1120, 26, table4_supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+table4.supp <- table4_fill(sim.young.1120, 26, table4.supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # Contour Plots -----------------------------------------------------------
 
@@ -114,11 +114,11 @@ sim.young.1010.2$param$misc.nudge.prob.1
 sim.young.1010.2$param$misc.nudge.prob.2
 sim.young.1010.2$param$misc.nudge.prob.3
 # vaccine coverage
-table2_supp <- table2_fill(sim.young.1010.2, 27, table2_supp)
+table2.supp <- table2_fill(sim.young.1010.2, 27, table2.supp)
 # cases
-table3_supp <- table3_fill(sim.young.1010.2, 27, table3_supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+table3.supp <- table3_fill(sim.young.1010.2, 27, table3.supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4_supp <- table4_fill(sim.young.1010.2, 27, table4_supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+table4.supp <- table4_fill(sim.young.1010.2, 27, table4.supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # sim.young.target.1055.X.rds - hosp.nudge prob at baseline, misc.nudge.prob halved
 # load and merge files
@@ -130,11 +130,11 @@ sim.young.1055.2$param$misc.nudge.prob.1
 sim.young.1055.2$param$misc.nudge.prob.2
 sim.young.1055.2$param$misc.nudge.prob.3
 # vaccine coverage
-table2_supp <- table2_fill(sim.young.1055.2, 28, table2_supp)
+table2.supp <- table2_fill(sim.young.1055.2, 28, table2.supp)
 # cases
-table3_supp <- table3_fill(sim.young.1055.2, 28, table3_supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+table3.supp <- table3_fill(sim.young.1055.2, 28, table3.supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4_supp <- table4_fill(sim.young.1055.2, 28, table4_supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+table4.supp <- table4_fill(sim.young.1055.2, 28, table4.supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # sim.young.target.1110.X.rds - hosp.nudge prob at baseline, misc.nudge.prob at 0
 # load and merge files
@@ -146,11 +146,11 @@ sim.young.1110.2$param$misc.nudge.prob.1
 sim.young.1110.2$param$misc.nudge.prob.2
 sim.young.1110.2$param$misc.nudge.prob.3
 # vaccine coverage
-table2_supp <- table2_fill(sim.young.1110.2, 29, table2_supp)
+table2.supp <- table2_fill(sim.young.1110.2, 29, table2.supp)
 # cases
-table3_supp <- table3_fill(sim.young.1110.2, 29, table3_supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+table3.supp <- table3_fill(sim.young.1110.2, 29, table3.supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4_supp <- table4_fill(sim.young.1110.2, 29, table4_supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+table4.supp <- table4_fill(sim.young.1110.2, 29, table4.supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # sim.young.taget.1065.X.rds - hosp.nudge.prob doubled, misc.nudge.prob halved
 # load and merge files
@@ -162,11 +162,11 @@ sim.young.1065.2$param$misc.nudge.prob.1
 sim.young.1065.2$param$misc.nudge.prob.2
 sim.young.1065.2$param$misc.nudge.prob.3
 # vaccine coverage
-table2_supp <- table2_fill(sim.young.1065.2, 30, table2_supp)
+table2.supp <- table2_fill(sim.young.1065.2, 30, table2.supp)
 # cases
-table3_supp <- table3_fill(sim.young.1065.2, 30, table3_supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+table3.supp <- table3_fill(sim.young.1065.2, 30, table3.supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4_supp <- table4_fill(sim.young.1065.2, 30, table4_supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+table4.supp <- table4_fill(sim.young.1065.2, 30, table4.supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # sim.young.target.1120.X.rds - hosp.nudge.prob doubled, misc.nudge.prob at 0
 # load and merge files
@@ -178,11 +178,11 @@ sim.young.1120.2$param$misc.nudge.prob.1
 sim.young.1120.2$param$misc.nudge.prob.2
 sim.young.1120.2$param$misc.nudge.prob.3
 # vaccine coverage
-table2_supp <- table2_fill(sim.young.1120.2, 31, table2_supp)
+table2.supp <- table2_fill(sim.young.1120.2, 31, table2.supp)
 # cases
-table3_supp <- table3_fill(sim.young.1120.2, 31, table3_supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
+table3.supp <- table3_fill(sim.young.1120.2, 31, table3.supp, ref_inf_rate = ref_inf_rate, ref_inf_count = ref_inf_count, ref_doses = ref_doses)
 # deaths
-table4_supp <- table4_fill(sim.young.1120.2, 31, table4_supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
+table4.supp <- table4_fill(sim.young.1120.2, 31, table4.supp, ref_death_rate = ref_death_rate, ref_death_count = ref_death_count, ref_doses = ref_doses)
 
 # Contour Plots: Misc NP Varying -----------------------------------------------------------
 
