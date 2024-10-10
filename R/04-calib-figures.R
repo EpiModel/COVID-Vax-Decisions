@@ -15,11 +15,11 @@ times <- data.frame(DayNum = c(608, 577, 546, 516, 485, 455, 424, 396, 365, 334,
                               "May-21", "Apr-21", "Mar-21", "Feb-21", "Jan-21"))
 times <- times %>% map_df(rev)
 
-colors1 <- c("Result" = "dodgerblue4", "Target (Empirical)" = "deepskyblue")
-colors <- c("Dose 1: Result" = "dodgerblue4", "Dose 2: Result" = "darkgreen", 
-            "Dose 3: Result" = "darkred", "Dose 4: Result" = "darkorchid4",
-            "Dose 1: Target" = "deepskyblue", "Dose 2: Target" = "chartreuse", 
-            "Dose 3: Target" = "deeppink", "Dose 4: Target" = "purple")
+colors1 <- c("Result" = "#00BFC4", "Target (Empirical)" = "#F8766d")
+colors <- c("Dose 1: Result" = "deepskyblue", "Dose 2: Result" = "chartreuse", 
+            "Dose 3: Result" = "deeppink", "Dose 4: Result" = "purple",
+            "Dose 1: Target" = "dodgerblue4", "Dose 2: Target" = "darkgreen", 
+            "Dose 3: Target" = "darkred", "Dose 4: Target" = "darkorchid4")
 
 merge_simfiles <- function(simno, indir = "data/", vars = NULL,  truncate.at = NULL, verbose = TRUE) {
   
@@ -98,9 +98,9 @@ cases_all_runs <- cases_all_runs %>% group_by(ROW) %>%
 cases_all_runs$target <- case_targets
 
 f1 <- ggplot(data = cases_all_runs, aes(x = ROW, y = minResult)) + 
-  geom_ribbon(data = cases_all_runs, aes(ymin = minResult, ymax = maxResult), fill="dodgerblue4", alpha=0.5) + 
-  geom_line(aes(y = meanResult, color = "Result")) + 
-  geom_line(aes(y = target, color = "Target (Empirical)")) + 
+  geom_ribbon(data = cases_all_runs, aes(ymin = minResult, ymax = maxResult), fill="#00BFC4", alpha=0.5) + 
+  geom_line(aes(y = meanResult, color = "Result"), linewidth = 1) + 
+  geom_point(aes(y = target, color = "Target (Empirical)"), size = 2) + 
   scale_x_continuous(expand = c(0,0),
                      limits = c(1, 20),
                      breaks = c(1, 4, 7, 10, 13, 16, 19),
@@ -139,9 +139,9 @@ hosp_all_runs <- hosp_all_runs %>% group_by(ROW) %>%
 hosp_all_runs$target <- hosp_targets
 
 f2 <- ggplot(data = hosp_all_runs, aes(x = ROW, y = minResult)) + 
-  geom_ribbon(data = hosp_all_runs, aes(ymin = minResult, ymax = maxResult), fill="dodgerblue4", alpha=0.5) + 
-  geom_line(aes(y = meanResult, color = "Result")) + 
-  geom_line(aes(y = target, color = "Target (Empirical)")) + 
+  geom_ribbon(data = hosp_all_runs, aes(ymin = minResult, ymax = maxResult), fill="#00BFC4", alpha=0.5) + 
+  geom_line(aes(y = meanResult, color = "Result"), linewidth = 1) + 
+  geom_point(aes(y = target, color = "Target (Empirical)"), size = 2) + 
   scale_x_continuous(expand = c(0,0),
                      limits = c(1, 20),
                      breaks = c(1, 4, 7, 10, 13, 16, 19),
@@ -179,9 +179,9 @@ death_all_runs <- death_all_runs %>% group_by(ROW) %>%
 death_all_runs$target <- death_targets
 
 f3 <- ggplot(data = death_all_runs, aes(x = ROW, y = minResult)) + 
-  geom_ribbon(data = death_all_runs, aes(ymin = minResult, ymax = maxResult), fill="dodgerblue4", alpha=0.5) + 
-  geom_line(aes(y = meanResult, color = "Result")) + 
-  geom_line(aes(y = target, color = "Target (Empirical)")) + 
+  geom_ribbon(data = death_all_runs, aes(ymin = minResult, ymax = maxResult), fill="#00BFC4", alpha=0.5) + 
+  geom_line(aes(y = meanResult, color = "Result"), linewidth = 1) + 
+  geom_point(aes(y = target, color = "Target (Empirical)"), size = 2) + 
   scale_x_continuous(expand = c(0,0),
                      limits = c(1, 20),
                      breaks = c(1, 4, 7, 10, 13, 16, 19),
@@ -300,12 +300,12 @@ vax_all_runs_1 <- vax_all_runs[, c("ROW", "mean.vax1.0to4", "mean.vax2.0to4",
                                    "target.vax1.0to4", "target.vax2.0to4")]
 
 v1 <- ggplot(data = vax_all_runs_1, aes(x = ROW, y = mean.vax1.0to4)) + 
-  geom_ribbon(data=vax_all_runs_1, aes(ymin = min.vax1.0to4, ymax = max.vax1.0to4), fill="dodgerblue4", alpha=0.5) + 
-  geom_ribbon(data=vax_all_runs_1, aes(ymin = min.vax2.0to4, ymax = max.vax2.0to4), fill="darkgreen", alpha=0.5) +
-  geom_line(aes(y = mean.vax1.0to4, color = "Dose 1: Result")) + 
-  geom_line(aes(y = mean.vax2.0to4, color = "Dose 2: Result")) + 
-  geom_line(aes(y = target.vax1.0to4, color = "Dose 1: Target")) +
-  geom_line(aes(y = target.vax2.0to4, color = "Dose 2: Target")) +
+  geom_ribbon(data=vax_all_runs_1, aes(ymin = min.vax1.0to4, ymax = max.vax1.0to4), fill="deepskyblue", alpha = 0.5) + 
+  geom_ribbon(data=vax_all_runs_1, aes(ymin = min.vax2.0to4, ymax = max.vax2.0to4), fill="chartreuse", alpha = 0.5) +
+  geom_line(aes(y = mean.vax1.0to4, color = "Dose 1: Result"), linewidth = 1) + 
+  geom_line(aes(y = mean.vax2.0to4, color = "Dose 2: Result"), linewidth = 1) + 
+  geom_line(aes(y = target.vax1.0to4, color = "Dose 1: Target"), linewidth = 1) +
+  geom_line(aes(y = target.vax2.0to4, color = "Dose 2: Target"), linewidth = 1) +
   scale_x_continuous(expand = c(0,0),
                      limits = c(1, 20),
                      breaks = c(1, 7, 13, 19),
@@ -328,15 +328,15 @@ vax_all_runs_2 <- vax_all_runs[, c("ROW", "mean.vax1.5to17", "mean.vax2.5to17",
                                    "target.vax2.5to17", "target.vax3.5to17")]
 
 v2 <- ggplot(data = vax_all_runs_2, aes(x = ROW, y = mean.vax1.5to17)) + 
-  geom_ribbon(data=vax_all_runs_2, aes(ymin = min.vax1.5to17, ymax = max.vax1.5to17), fill="dodgerblue4", alpha=0.5) + 
-  geom_ribbon(data=vax_all_runs_2, aes(ymin = min.vax2.5to17, ymax = max.vax2.5to17), fill="darkgreen", alpha=0.5) +
-  geom_ribbon(data=vax_all_runs_2, aes(ymin = min.vax3.5to17, ymax = max.vax3.5to17), fill="darkred", alpha=0.5) +
-  geom_line(aes(y = mean.vax1.5to17, color = "Dose 1: Result")) + 
-  geom_line(aes(y = mean.vax2.5to17, color = "Dose 2: Result")) + 
-  geom_line(aes(y = mean.vax3.5to17, color = "Dose 3: Result")) +
-  geom_line(aes(y = target.vax1.5to17, color = "Dose 1: Target")) + 
-  geom_line(aes(y = target.vax2.5to17, color = "Dose 2: Target")) +
-  geom_line(aes(y = target.vax3.5to17, color = "Dose 3: Target")) +
+  geom_ribbon(data=vax_all_runs_2, aes(ymin = min.vax1.5to17, ymax = max.vax1.5to17), fill="deepskyblue", alpha=0.5) + 
+  geom_ribbon(data=vax_all_runs_2, aes(ymin = min.vax2.5to17, ymax = max.vax2.5to17), fill="chartreuse", alpha=0.5) +
+  geom_ribbon(data=vax_all_runs_2, aes(ymin = min.vax3.5to17, ymax = max.vax3.5to17), fill="deeppink", alpha=0.5) +
+  geom_line(aes(y = mean.vax1.5to17, color = "Dose 1: Result"), linewidth = 1) + 
+  geom_line(aes(y = mean.vax2.5to17, color = "Dose 2: Result"), linewidth = 1) + 
+  geom_line(aes(y = mean.vax3.5to17, color = "Dose 3: Result"), linewidth = 1) +
+  geom_line(aes(y = target.vax1.5to17, color = "Dose 1: Target"), linewidth = 1) + 
+  geom_line(aes(y = target.vax2.5to17, color = "Dose 2: Target"), linewidth = 1) +
+  geom_line(aes(y = target.vax3.5to17, color = "Dose 3: Target"), linewidth = 1) +
   scale_x_continuous(expand = c(0,0),
                      limits = c(1, 20),
                      breaks = c(1, 7, 13, 19),
@@ -361,15 +361,15 @@ vax_all_runs_3 <- vax_all_runs[, c("ROW", "mean.vax1.18to64", "mean.vax2.18to64"
                                    "target.vax2.18to64", "target.vax3.18to49")]
 
 v3 <- ggplot(data = vax_all_runs_3, aes(x = ROW, y = mean.vax1.18to64)) + 
-  geom_ribbon(data=vax_all_runs_3, aes(ymin = min.vax1.18to64, ymax = max.vax1.18to64), fill="dodgerblue4", alpha=0.5) + 
-  geom_ribbon(data=vax_all_runs_3, aes(ymin = min.vax2.18to64, ymax = max.vax2.18to64), fill="darkgreen", alpha=0.5) +
-  geom_ribbon(data=vax_all_runs_3, aes(ymin = min.vax3.18to49, ymax = max.vax3.18to49), fill="darkred", alpha=0.5) +
-  geom_line(aes(y = mean.vax1.18to64, color = "Dose 1: Result")) + 
-  geom_line(aes(y = mean.vax2.18to64, color = "Dose 2: Result")) + 
-  geom_line(aes(y = mean.vax3.18to49, color = "Dose 3: Result")) +
-  geom_line(aes(y = target.vax1.18to64, color = "Dose 1: Target")) + 
-  geom_line(aes(y = target.vax2.18to64, color = "Dose 2: Target")) +
-  geom_line(aes(y = target.vax3.18to49, color = "Dose 3: Target")) +
+  geom_ribbon(data=vax_all_runs_3, aes(ymin = min.vax1.18to64, ymax = max.vax1.18to64), fill="deepskyblue", alpha=0.5) + 
+  geom_ribbon(data=vax_all_runs_3, aes(ymin = min.vax2.18to64, ymax = max.vax2.18to64), fill="chartreuse", alpha=0.5) +
+  geom_ribbon(data=vax_all_runs_3, aes(ymin = min.vax3.18to49, ymax = max.vax3.18to49), fill="deeppink", alpha=0.5) +
+  geom_line(aes(y = mean.vax1.18to64, color = "Dose 1: Result"), linewidth = 1) + 
+  geom_line(aes(y = mean.vax2.18to64, color = "Dose 2: Result"), linewidth = 1) + 
+  geom_line(aes(y = mean.vax3.18to49, color = "Dose 3: Result"), linewidth = 1) +
+  geom_line(aes(y = target.vax1.18to64, color = "Dose 1: Target"), linewidth = 1) + 
+  geom_line(aes(y = target.vax2.18to64, color = "Dose 2: Target"), linewidth = 1) +
+  geom_line(aes(y = target.vax3.18to49, color = "Dose 3: Target"), linewidth = 1) +
   scale_x_continuous(expand = c(0,0),
                      limits = c(1, 20),
                      breaks = c(1, 7, 13, 19),
@@ -395,18 +395,18 @@ vax_all_runs_4 <- vax_all_runs[, c("ROW", "mean.vax1.18to64", "mean.vax2.18to64"
                                    "target.vax3.50to64", "target.vax4.50to64")]
 
 v4 <- ggplot(data = vax_all_runs_4, aes(x = ROW, y = mean.vax1.18to64)) + 
-  geom_ribbon(data=vax_all_runs_4, aes(ymin = min.vax1.18to64, ymax = max.vax1.18to64), fill="dodgerblue4", alpha=0.5) + 
-  geom_ribbon(data=vax_all_runs_4, aes(ymin = min.vax2.18to64, ymax = max.vax2.18to64), fill="darkgreen", alpha=0.5) +
-  geom_ribbon(data=vax_all_runs_4, aes(ymin = min.vax3.50to64, ymax = max.vax3.50to64), fill="darkred", alpha=0.5) +
-  geom_ribbon(data=vax_all_runs_4, aes(ymin = min.vax4.50to64, ymax = max.vax4.50to64), fill="darkorchid4", alpha=0.5) +
-  geom_line(aes(y = mean.vax1.18to64, color = "Dose 1: Result")) + 
-  geom_line(aes(y = mean.vax2.18to64, color = "Dose 2: Result")) + 
-  geom_line(aes(y = mean.vax3.50to64, color = "Dose 3: Result")) +
-  geom_line(aes(y = mean.vax4.50to64, color = "Dose 4: Result")) +
-  geom_line(aes(y = target.vax1.18to64, color = "Dose 1: Target")) + 
-  geom_line(aes(y = target.vax2.18to64, color = "Dose 2: Target")) +
-  geom_line(aes(y = target.vax3.50to64, color = "Dose 3: Target")) +
-  geom_line(aes(y = target.vax4.50to64, color = "Dose 4: Target")) +
+  geom_ribbon(data=vax_all_runs_4, aes(ymin = min.vax1.18to64, ymax = max.vax1.18to64), fill="deepskyblue", alpha=0.5) + 
+  geom_ribbon(data=vax_all_runs_4, aes(ymin = min.vax2.18to64, ymax = max.vax2.18to64), fill="chartreuse", alpha=0.5) +
+  geom_ribbon(data=vax_all_runs_4, aes(ymin = min.vax3.50to64, ymax = max.vax3.50to64), fill="deeppink", alpha=0.5) +
+  geom_ribbon(data=vax_all_runs_4, aes(ymin = min.vax4.50to64, ymax = max.vax4.50to64), fill="purple", alpha=0.5) +
+  geom_line(aes(y = mean.vax1.18to64, color = "Dose 1: Result"), linewidth = 1) + 
+  geom_line(aes(y = mean.vax2.18to64, color = "Dose 2: Result"), linewidth = 1) + 
+  geom_line(aes(y = mean.vax3.50to64, color = "Dose 3: Result"), linewidth = 1) +
+  geom_line(aes(y = mean.vax4.50to64, color = "Dose 4: Result"), linewidth = 1) +
+  geom_line(aes(y = target.vax1.18to64, color = "Dose 1: Target"), linewidth = 1) + 
+  geom_line(aes(y = target.vax2.18to64, color = "Dose 2: Target"), linewidth = 1) +
+  geom_line(aes(y = target.vax3.50to64, color = "Dose 3: Target"), linewidth = 1) +
+  geom_line(aes(y = target.vax4.50to64, color = "Dose 4: Target"), linewidth = 1) +
   scale_x_continuous(expand = c(0,0),
                      limits = c(1, 20),
                      breaks = c(1, 7, 13, 19),
@@ -430,18 +430,18 @@ vax_all_runs_5 <- vax_all_runs[, c("ROW", "mean.vax1.65p", "mean.vax2.65p",
                                    "target.vax3.65p", "target.vax4.65p")]
 
 v5 <- ggplot(data = vax_all_runs_5, aes(x = ROW, y = mean.vax1.65p)) + 
-  geom_ribbon(data=vax_all_runs_5, aes(ymin = min.vax1.65p, ymax = max.vax1.65p), fill="navy", alpha=0.5) + 
-  geom_ribbon(data=vax_all_runs_5, aes(ymin = min.vax2.65p, ymax = max.vax2.65p), fill="darkgreen", alpha=0.5) +
-  geom_ribbon(data=vax_all_runs_5, aes(ymin = min.vax3.65p, ymax = max.vax3.65p), fill="darkred", alpha=0.5) +
-  geom_ribbon(data=vax_all_runs_5, aes(ymin = min.vax4.65p, ymax = max.vax4.65p), fill="darkorchid4", alpha=0.5) +
-  geom_line(aes(y = mean.vax1.65p, color = "Dose 1: Result")) + 
-  geom_line(aes(y = mean.vax2.65p, color = "Dose 2: Result")) + 
-  geom_line(aes(y = mean.vax3.65p, color = "Dose 3: Result")) +
-  geom_line(aes(y = mean.vax4.65p, color = "Dose 4: Result")) +
-  geom_line(aes(y = target.vax1.65p, color = "Dose 1: Target")) + 
-  geom_line(aes(y = target.vax2.65p, color = "Dose 2: Target")) +
-  geom_line(aes(y = target.vax3.65p, color = "Dose 3: Target")) +
-  geom_line(aes(y = target.vax4.65p, color = "Dose 4: Target")) +
+  geom_ribbon(data=vax_all_runs_5, aes(ymin = min.vax1.65p, ymax = max.vax1.65p), fill="deepskyblue", alpha=0.5) + 
+  geom_ribbon(data=vax_all_runs_5, aes(ymin = min.vax2.65p, ymax = max.vax2.65p), fill="chartreuse", alpha=0.5) +
+  geom_ribbon(data=vax_all_runs_5, aes(ymin = min.vax3.65p, ymax = max.vax3.65p), fill="deeppink", alpha=0.5) +
+  geom_ribbon(data=vax_all_runs_5, aes(ymin = min.vax4.65p, ymax = max.vax4.65p), fill="purple", alpha=0.5) +
+  geom_line(aes(y = mean.vax1.65p, color = "Dose 1: Result"), linewidth = 1) + 
+  geom_line(aes(y = mean.vax2.65p, color = "Dose 2: Result"), linewidth = 1) + 
+  geom_line(aes(y = mean.vax3.65p, color = "Dose 3: Result"), linewidth = 1) +
+  geom_line(aes(y = mean.vax4.65p, color = "Dose 4: Result"), linewidth = 1) +
+  geom_line(aes(y = target.vax1.65p, color = "Dose 1: Target"), linewidth = 1) + 
+  geom_line(aes(y = target.vax2.65p, color = "Dose 2: Target"), linewidth = 1) +
+  geom_line(aes(y = target.vax3.65p, color = "Dose 3: Target"), linewidth = 1) +
+  geom_line(aes(y = target.vax4.65p, color = "Dose 4: Target"), linewidth = 1) +
   scale_x_continuous(expand = c(0,0),
                      limits = c(1, 20),
                      breaks = c(1, 7, 13, 19),

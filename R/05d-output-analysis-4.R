@@ -8,8 +8,9 @@ library("patchwork")
 createPlotData <- function(sim)
 {
   cases <- sim[["epi"]][["se.flow"]]
-  cases$median = apply(cases, 1, median, na.rm = TRUE)
-  
+  cases = apply(cases, 1, median)
+  cases <- runmean(cases, k = 7, endrule = "mean")
+ 
   vax1 <- sim[["epi"]][["nVax1"]]
   vax1$median = apply(vax1, 1, median, na.rm = TRUE)
   vax1$cMedian = cumsum(vax1$median)
@@ -26,7 +27,7 @@ createPlotData <- function(sim)
   vax4$median = apply(vax4, 1, median, na.rm = TRUE)
   vax4$cMedian = cumsum(vax4$median)
   
-  plot_data <- data.frame(Day = 1:608, Cases = cases$median, cVax1 = vax1$cMedian, cVax2 = vax2$cMedian, cVax3 = vax3$cMedian, cVax4 = vax4$cMedian)
+  plot_data <- data.frame(Day = 1:608, Cases = cases, cVax1 = vax1$cMedian, cVax2 = vax2$cMedian, cVax3 = vax3$cMedian, cVax4 = vax4$cMedian)
   
   return(plot_data)
 }
@@ -90,7 +91,7 @@ plot_data2$cVax3_diff <- plot_data2$cVax3 - plot_data1$cVax3
 plot_data2$cVax4_diff <- plot_data2$cVax4 - plot_data1$cVax4
 
 p2 <- ggplot(data = plot_data2, aes(x = Day, y = Cases)) + 
-  geom_bar(stat = "identity", color = "lightblue") + 
+  geom_line(color = "lightblue", linewidth = 3) +
   scale_y_continuous("Incidence", expand = c(0, 0),
                      sec.axis = sec_axis(~ . * 4.5, name = "Cum. Addtl. Doses", labels = c("0", "1'000", "2'000", "3'000", "4'000"))) + 
   geom_line(aes(y = cVax1_diff / 4.5, color = "Dose 1")) + 
@@ -117,7 +118,7 @@ plot_data3$cVax3_diff <- plot_data3$cVax3 - plot_data1$cVax3
 plot_data3$cVax4_diff <- plot_data3$cVax4 - plot_data1$cVax4
 
 p3 <- ggplot(data = plot_data3, aes(x = Day, y = Cases)) + 
-  geom_bar(stat = "identity", color = "lightblue") + 
+  geom_line(color = "lightblue", linewidth = 3) +
   scale_y_continuous("Incidence", expand = c(0, 0),
                      sec.axis = sec_axis(~ . * 0.1, name = "Cum. Addtl. Doses")) + 
   geom_line(aes(y = cVax1_diff / 0.1, color = "Dose 1")) + 
@@ -144,7 +145,7 @@ plot_data4$cVax3_diff <- plot_data4$cVax3 - plot_data1$cVax3
 plot_data4$cVax4_diff <- plot_data4$cVax4 - plot_data1$cVax4
 
 p4 <- ggplot(data = plot_data4, aes(x = Day, y = Cases)) + 
-  geom_bar(stat = "identity", color = "lightblue") + 
+  geom_line(color = "lightblue", linewidth = 3) +
   scale_y_continuous("Incidence", expand = c(0, 0),
                      sec.axis = sec_axis(~ . * 0.1, name = "Cum. Addtl. Doses")) + 
   geom_line(aes(y = cVax1_diff / 0.1, color = "Dose 1")) + 
@@ -171,7 +172,7 @@ plot_data5$cVax3_diff <- plot_data5$cVax3 - plot_data1$cVax3
 plot_data5$cVax4_diff <- plot_data5$cVax4 - plot_data1$cVax4
 
 p5 <- ggplot(data = plot_data5, aes(x = Day, y = Cases)) + 
-  geom_bar(stat = "identity", color = "lightblue") + 
+  geom_line(color = "lightblue", linewidth = 3) +
   scale_y_continuous("Incidence", expand = c(0, 0),
                      sec.axis = sec_axis(~ . * 4.5, name = "Cum. Addtl. Doses", labels = c("0", "1'000", "2'000", "3'000", "4'000"))) + 
   geom_line(aes(y = cVax1_diff / 4.5, color = "Dose 1")) + 
@@ -198,7 +199,7 @@ plot_data6$cVax3_diff <- plot_data6$cVax3 - plot_data1$cVax3
 plot_data6$cVax4_diff <- plot_data6$cVax4 - plot_data1$cVax4
 
 p6 <- ggplot(data = plot_data6, aes(x = Day, y = Cases)) + 
-  geom_bar(stat = "identity", color = "lightblue") + 
+  geom_line(color = "lightblue", linewidth = 3) +
   scale_y_continuous("Incidence", expand = c(0, 0),
                      sec.axis = sec_axis(~ . * 4.5, name = "Cum. Addtl. Doses", labels = c("0", "1'000", "2'000", "3'000", "4'000"))) + 
   geom_line(aes(y = cVax1_diff / 4.5, color = "Dose 1")) + 
@@ -225,7 +226,7 @@ plot_data8$cVax3_diff <- plot_data8$cVax3 - plot_data1$cVax3
 plot_data8$cVax4_diff <- plot_data8$cVax4 - plot_data1$cVax4
 
 p8 <- ggplot(data = plot_data8, aes(x = Day, y = Cases)) + 
-  geom_bar(stat = "identity", color = "lightblue") + 
+  geom_line(color = "lightblue", linewidth = 3) +
   scale_y_continuous("Incidence", expand = c(0, 0),
                      sec.axis = sec_axis(~ . * 37, name = "Cum. Addtl. Doses", labels = c("0", "10'000", "20'000", "30'000"))) + 
   geom_line(aes(y = cVax1_diff / 37, color = "Dose 1")) + 
@@ -240,7 +241,7 @@ p8 <- ggplot(data = plot_data8, aes(x = Day, y = Cases)) +
                      labels = c("1" = "Jan 21", "182" = "Jul 21", 
                                 "366" = "Jan 22", "547" = "Jul 22")) +
   coord_cartesian(ylim=c(0, 900)) + 
-  ggtitle("F: Misc. NP Halved") + theme_classic() +
+  ggtitle("F: Ext. NP Halved") + theme_classic() +
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2)))
@@ -253,7 +254,7 @@ plot_data9$cVax3_diff <- plot_data9$cVax3 - plot_data1$cVax3
 plot_data9$cVax4_diff <- plot_data9$cVax4 - plot_data1$cVax4
 
 p9 <- ggplot(data = plot_data9, aes(x = Day, y = Cases)) + 
-  geom_bar(stat = "identity", color = "lightblue") + 
+  geom_line(color = "lightblue", linewidth = 3) +
   scale_y_continuous("Incidence", expand = c(0, 0),
                      sec.axis = sec_axis(~ . * 37, name = "Cum. Addtl. Doses", labels = c("0", "10'000", "20'000", "30'000"))) + 
   geom_line(aes(y = cVax1_diff / 37, color = "Dose 1")) + 
@@ -268,7 +269,7 @@ p9 <- ggplot(data = plot_data9, aes(x = Day, y = Cases)) +
                      labels = c("1" = "Jan 21", "182" = "Jul 21", 
                                 "366" = "Jan 22", "547" = "Jul 22")) +
   coord_cartesian(ylim=c(0, 900)) + 
-  ggtitle("G: Misc. NP at 0") + theme_classic() +
+  ggtitle("G: Ext. NP at 0") + theme_classic() +
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2)))
@@ -281,7 +282,7 @@ plot_data10$cVax3_diff <- plot_data10$cVax3 - plot_data1$cVax3
 plot_data10$cVax4_diff <- plot_data10$cVax4 - plot_data1$cVax4
 
 p10 <- ggplot(data = plot_data10, aes(x = Day, y = Cases)) + 
-  geom_bar(stat = "identity", color = "lightblue") + 
+  geom_line(color = "lightblue", linewidth = 3) +
   scale_y_continuous("Incidence", expand = c(0, 0),
                      sec.axis = sec_axis(~ . * 37, name = "Cum. Addtl. Doses", labels = c("0", "10'000", "20'000", "30'000"))) + 
   geom_line(aes(y = cVax1_diff / 37, color = "Dose 1")) + 
@@ -296,7 +297,7 @@ p10 <- ggplot(data = plot_data10, aes(x = Day, y = Cases)) +
                      labels = c("1" = "Jan 21", "182" = "Jul 21", 
                                 "366" = "Jan 22", "547" = "Jul 22")) +
   coord_cartesian(ylim=c(0, 900)) + 
-  ggtitle("H: Hosp. NP Doubled and Misc. NP Halved") + theme_classic() +
+  ggtitle("H: Hosp. NP Doubled and Ext. NP Halved") + theme_classic() +
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2)))
@@ -310,7 +311,7 @@ plot_data11$cVax3_diff <- plot_data11$cVax3 - plot_data1$cVax3
 plot_data11$cVax4_diff <- plot_data11$cVax4 - plot_data1$cVax4
 
 p11 <- ggplot(data = plot_data11, aes(x = Day, y = Cases)) + 
-  geom_bar(stat = "identity", color = "lightblue") + 
+  geom_line(color = "lightblue", linewidth = 3) +
   scale_y_continuous("Incidence", expand = c(0, 0),
                      sec.axis = sec_axis(~ . * 37, name = "Cum. Addtl. Doses", labels = c("0", "10'000", "20'000", "30'000"))) + 
   geom_line(aes(y = cVax1_diff / 37, color = "Dose 1")) + 
@@ -325,7 +326,7 @@ p11 <- ggplot(data = plot_data11, aes(x = Day, y = Cases)) +
                      labels = c("1" = "Jan 21", "182" = "Jul 21", 
                                 "366" = "Jan 22", "547" = "Jul 22")) +
   coord_cartesian(ylim=c(0, 900)) + 
-  ggtitle("I: Hosp. NP Doubled and Misc. NP at 0") + theme_classic() +
+  ggtitle("I: Hosp. NP Doubled and Ext. NP at 0") + theme_classic() +
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
         legend.text = element_text(size = rel(1.2)))

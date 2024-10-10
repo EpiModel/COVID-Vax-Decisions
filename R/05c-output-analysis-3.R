@@ -238,11 +238,12 @@ g_inc_cont_young_2 <- ggplot(cInc.young.2, aes(hosp.nudge.prob.scale, misc.nudge
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hosp. NP (% of Reference)", y = "Misc. NP (% of Reference)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval.i, maxval.i)) + 
+  labs(x = "Hosp. NP (% of Reference)", y = "Ext. NP (% of Reference)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Infections per\n100'000 Person-Days", limits = c(minval.i, maxval.i)) + 
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
-        legend.text = element_text(size = rel(1.2))) + 
+        legend.text = element_text(size = rel(1.2)),
+        legend.title = element_text(size = rel(1.2))) + 
   coord_fixed() +
   theme(legend.position = "right", legend.justification = "left")
 
@@ -266,11 +267,12 @@ g_death_cont_young_2 <- ggplot(cDeaths.young.2, aes(hosp.nudge.prob.scale, misc.
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hosp. NP (% of Ref.)", y = "Misc. NP (% of Ref.)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval.d, maxval.d)) + 
+  labs(x = "Hosp. NP (% of Ref.)", y = "Ext. NP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Deaths per\n100'000 Person-Days", limits = c(minval.d, maxval.d)) + 
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
-        legend.text = element_text(size = rel(1.2))) + 
+        legend.text = element_text(size = rel(1.2)),
+        legend.title = element_text(size = rel(1.2))) + 
   coord_fixed() + 
   theme(legend.position = "right", legend.justification = "left")
 
@@ -294,18 +296,15 @@ g_dose_cont_young_2 <- ggplot(cDoses.young.2, aes(hosp.nudge.prob.scale, misc.nu
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Hosp. NP (% of Ref.)", y = "Misc. NP (% of Ref.)") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "", limits = c(minval.v, maxval.v), labels = c("150'000", "160'000", "170'000", "180'000", "190'000", "200'000")) + 
+  labs(x = "Hosp. NP (% of Ref.)", y = "Ext. NP (% of Ref.)") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1, name = "Total Vaccine\nDoses Administered", limits = c(minval.v, maxval.v), labels = c("150'000", "160'000", "170'000", "180'000", "190'000", "200'000")) + 
   theme(axis.text = element_text(size = rel(1.2)),
         axis.title = element_text(size = rel(1.2)),
-        legend.text = element_text(size = rel(1.2))) + 
+        legend.text = element_text(size = rel(1.2)),
+        legend.title = element_text(size = rel(1.2))) + 
   coord_fixed() +
   theme(legend.position = "right", legend.justification = "left")
 
-combined1 <- g_dose_cont_young + g_dose_cont_young_2 + plot_annotation(tag_levels = list(c("A1", "A2")), title = "Total Vaccine Doses Administered") 
-combined2 <- g_inc_cont_young + g_inc_cont_young_2 + plot_annotation(tag_levels = list(c("B1", "B2")), title = "Infections per 100'000 Person-Days") 
-combined3 <- g_death_cont_young + g_death_cont_young_2 + plot_annotation(tag_levels = list(c("C1", "C2")), title = "Deaths per 100'000 Person-Days") 
-
-wrap_elements(combined1) / wrap_elements(combined2) / wrap_elements(combined3)
+((g_dose_cont_young + g_dose_cont_young_2) / (g_inc_cont_young + g_inc_cont_young_2) / (g_death_cont_young + g_death_cont_young_2)) + plot_annotation(tag_levels = list(c("A1", "A2", "B1", "B2", "C1", "C2")))
 
 ggsave("FigureA2.tiff", width = 12, height = 12, units = "in", dpi=300, compression = 'lzw')
